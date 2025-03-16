@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import vortek.sistponto.VortekPonto.Dto.EmpresaDto;
 import vortek.sistponto.VortekPonto.Models.Empresa;
 
+
 @Repository
 public interface EmpresaRepository extends JpaRepository<Empresa, Long> {
 

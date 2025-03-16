@@ -11,6 +11,7 @@ public enum TipoUsuario {
         this.tipo = tipo;
     }
 
+
     public String getTipo() {
         return tipo;
     }

@@ -71,4 +71,5 @@ public class EmpresaDto {
     public void setIdUsuario(@NotBlank(message = "O tipo de usuario é obrigatório") Usuario idUsuario) {
         this.idUsuario = idUsuario;
     }
+
 }

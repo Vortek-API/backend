@@ -22,4 +22,5 @@ public class Empresa {
 
     @ManyToOne
     private Usuario idUsuario;
+
 }

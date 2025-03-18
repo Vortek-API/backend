@@ -7,8 +7,13 @@ services:
       - MYSQL_ROOT_PASSWORD=mysql
     ports: 
       - '3333:3306'
+    volumes:
+      - mysql_data:/var/lib/mysql 
     networks: 
       - vortek-network
 networks:
   vortek-network:
     driver: bridge
+    
+volumes:
+  mysql_data:

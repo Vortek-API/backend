@@ -1,1 +1,1 @@
-# Backend - Vortek
+Este repositório contém o back-end do Sistema de Ponto desenvolvido pela equipe VORTEK. O sistema tem como objetivo gerenciar o registro de ponto dos colaboradores, oferecendo uma API robusta e escalável para integrar com o front-end.

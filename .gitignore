@@ -1,0 +1,40 @@
+/VortekPonto/target/
+/VortekPonto/bin/
+/VortekPonto/.idea/
+/VortekPonto/.vscode/
+/VortekPonto/.classpath
+/VortekPonto/.project
+/VortekPonto/.settings/
+/VortekPonto/*.log
+/VortekPonto/*.tmp
+/VortekPonto/*.bak
+/VortekPonto/*.iml
+/VortekPonto/*.iws
+/VortekPonto/*.ipr
+/VortekPonto/*.jar
+/VortekPonto/*.war
+/VortekPonto/*.ear
+/VortekPonto/test-output/
+/VortekPonto/*.h2.db
+/VortekPonto/*.mv.db
+/VortekPonto/*.db
+
+# Arquivos de configuração sensíveis
+/VortekPonto/.env
+/VortekPonto/application.properties
+/VortekPonto/application.yml
+/VortekPonto/application-*.properties
+/VortekPonto/application-*.yml
+
+# Chaves e certificados
+/VortekPonto/*.key
+/VortekPonto/*.pem
+/VortekPonto/*.p12
+/VortekPonto/*.jks
+/VortekPonto/*.crt
+/VortekPonto/*.cer
+
+# Sistema operacional
+/VortekPonto/.DS_Store
+/VortekPonto/Thumbs.db
+/VortekPonto/*.swp

@@ -18,16 +18,26 @@ public class EmpresaController {
     @Autowired
     EmpresaService empresaService;
 
-    @PostMapping
+    @PostMapping("/cadastrar")
+    public ResponseEntity<String> cadastrarEmpresa(@RequestBody Empresa empresa) {
+        try {
+            empresaService.cadastrarEmpresa(empresa);
+            return ResponseEntity.ok("Empresa cadastrada com sucesso!");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/salvar")
     public ResponseEntity<EmpresaDto> salvar(@RequestBody EmpresaDto empresa) {
         EmpresaDto emp = empresaService.criarEmpresa(empresa);
-        try{
-            if(empresa != null) {
+        try {
+            if (emp != null) {
                 URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                         .buildAndExpand(emp.getId()).toUri();
                 return ResponseEntity.created(uri).body(emp);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return ResponseEntity.badRequest().build();
@@ -50,5 +60,4 @@ public class EmpresaController {
         }
         return ResponseEntity.ok().body(emp);
     }
-
 }

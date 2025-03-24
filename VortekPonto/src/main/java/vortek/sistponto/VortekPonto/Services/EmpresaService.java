@@ -10,11 +10,19 @@ import vortek.sistponto.VortekPonto.Services.Exceptions.ObjectNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 @Service
 public class EmpresaService {
 
     @Autowired
-    EmpresaRepository empresaRepository;
+    private EmpresaRepository empresaRepository;
+
+    public Empresa cadastrarEmpresa(Empresa empresa) {
+        if (empresaRepository.existsByCnpj(empresa.getCnpj())) {
+            throw new RuntimeException("CNPJ já cadastrado!");
+        }
+        return empresaRepository.save(empresa);
+    }
 
     public EmpresaDto criarEmpresa(EmpresaDto empresa) {
         Empresa emp = new Empresa();

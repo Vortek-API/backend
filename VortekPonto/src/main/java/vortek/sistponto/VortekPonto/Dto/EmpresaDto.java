@@ -38,7 +38,7 @@ public class EmpresaDto {
         this.cnpj = empresa.getCnpj();
         this.idUsuario = empresa.getIdUsuario();
     }
-
+  
     @NotBlank
     public long getId() {
         return id;

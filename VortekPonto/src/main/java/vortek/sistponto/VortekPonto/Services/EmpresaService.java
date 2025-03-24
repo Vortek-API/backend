@@ -41,7 +41,6 @@ public class EmpresaService {
 
     public EmpresaDto buscarPorId(Long id) {
         Empresa empresa = empresaRepository.findById(id).get();
-
         if (empresa == null) {
             throw new ObjectNotFoundException("Event: " + id + " not found!");
         }

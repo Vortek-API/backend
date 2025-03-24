@@ -45,4 +45,15 @@ public class FuncionarioController {
 
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> excluirFunc(@PathVariable long id) {
+        boolean isDeleted = funcionarioService.excluirFunc(id);
+        if (isDeleted) {
+            return ResponseEntity.ok().build();  // 204 No Content
+        } else {
+            return ResponseEntity.notFound().build();  // 404 Not Found
+        }
+
+    }
+
 }

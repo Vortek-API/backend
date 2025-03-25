@@ -1,7 +1,7 @@
 /VortekPonto/target/
 /VortekPonto/bin/
-/VortekPonto/.idea/
-/VortekPonto/.vscode/
+.idea/
+.vscode/
 /VortekPonto/.classpath
 /VortekPonto/.project
 /VortekPonto/.settings/

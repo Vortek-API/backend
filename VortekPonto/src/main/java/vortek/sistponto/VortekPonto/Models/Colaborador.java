@@ -6,7 +6,7 @@ import lombok.*;
 import java.time.LocalTime;
 
 @Entity
-@Table(name="colaborador")
+@Table(name="Colaborador")
 @EqualsAndHashCode(of = "id")
 public class Colaborador {
 

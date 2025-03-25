@@ -38,5 +38,6 @@ public class Empresa {
     public void setCnpj(String cnpj) { this.cnpj = cnpj; }
     public String getEndereco() { return endereco; }
     public void setEndereco(String endereco) { this.endereco = endereco; }
+    public Usuario getIdUsuario() { return this.idUsuario; }
     public void setIdUsuario(Usuario idUsuario) { this.idUsuario = idUsuario; }
 }

@@ -1,6 +1,6 @@
 package vortek.sistponto.VortekPonto.Dto;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import vortek.sistponto.VortekPonto.Models.Empresa;
 import vortek.sistponto.VortekPonto.Models.Usuario;

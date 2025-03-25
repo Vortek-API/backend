@@ -1,13 +1,12 @@
 package vortek.sistponto.VortekPonto.Dto;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import vortek.sistponto.VortekPonto.Models.Empresa;
-import vortek.sistponto.VortekPonto.Models.Funcionario;
-
 import java.time.LocalTime;
 
-public class FuncionarioDto {
+import jakarta.persistence.Column;
+import jakarta.validation.constraints.NotBlank;
+import vortek.sistponto.VortekPonto.Models.Colaborador;
+
+public class ColaboradorDto {
 
     @NotBlank
     @Column(name = "id_col", nullable = false)
@@ -38,13 +37,13 @@ public class FuncionarioDto {
     private boolean status;
 
     @NotBlank
-    @Column(name = "Empresa_id", nullable = false)
+    @Column(name = "Empresa_id_emp", nullable = false)
     private Long id_empresa;
 
-    public FuncionarioDto() {
+    public ColaboradorDto() {
     }
 
-    public FuncionarioDto(String cpf, String nome, String cargo, LocalTime hora_ent, LocalTime hora_sai, boolean status, Long id_empresa) {
+    public ColaboradorDto(String cpf, String nome, String cargo, LocalTime hora_ent, LocalTime hora_sai, boolean status, Long id_empresa) {
         this.cpf = cpf;
         this.nome = nome;
         this.cargo = cargo;
@@ -54,7 +53,7 @@ public class FuncionarioDto {
         this.id_empresa = id_empresa;
     }
 
-    public FuncionarioDto(Funcionario func) {
+    public ColaboradorDto(Colaborador func) {
         this.cpf = func.getCpf();
         this.nome = func.getNome();
         this.cargo = func.getCargo();

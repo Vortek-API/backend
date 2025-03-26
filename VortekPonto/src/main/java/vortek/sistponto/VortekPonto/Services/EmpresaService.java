@@ -28,7 +28,6 @@ public class EmpresaService {
         Empresa emp = new Empresa();
         emp.setNome(empresa.getNome());
         emp.setCnpj(empresa.getCnpj());
-        emp.setIdUsuario(empresa.getIdUsuario());
         emp = empresaRepository.save(emp);
         return new EmpresaDto(emp);
     }
@@ -39,7 +38,7 @@ public class EmpresaService {
 
     }
 
-    public EmpresaDto buscarPorId(Long id) {
+    public EmpresaDto buscarPorId(Integer id) {
         Empresa empresa = empresaRepository.findById(id).get();
         if (empresa == null) {
             throw new ObjectNotFoundException("Event: " + id + " not found!");

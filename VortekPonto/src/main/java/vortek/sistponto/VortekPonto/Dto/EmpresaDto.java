@@ -3,13 +3,12 @@ package vortek.sistponto.VortekPonto.Dto;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import vortek.sistponto.VortekPonto.Models.Empresa;
-import vortek.sistponto.VortekPonto.Models.Usuario;
 
 public class EmpresaDto {
 
     @NotBlank
-    @Column(name = "id_emp", nullable = false)
-    private long id;
+    @Column(name = "id_emp")
+    private Integer id_emp;
 
     @NotBlank(message = "O nome é obrigatório")
     @Column(name = "nome_emp", nullable = false)
@@ -19,33 +18,29 @@ public class EmpresaDto {
     @Column(name = "cnpj_emp", nullable = false, unique = true)
     private String cnpj;
 
-    @NotBlank(message = "O tipo de usuario é obrigatório")
-    @Column(name = "Usuario_id_usuar", nullable = false)
-    private Usuario idUsuario;
 
-    public EmpresaDto() {}
+    public EmpresaDto() {
+    }
 
-    public EmpresaDto(long id, String nome, String cnpj, Usuario idUsuario) {
-        this.id = id;
+    public EmpresaDto( String nome, String cnpj) {
         this.nome = nome;
         this.cnpj = cnpj;
-        this.idUsuario = idUsuario;
+
     }
 
     public EmpresaDto(Empresa empresa) {
-        this.id = empresa.getId();
+        this.id_emp = empresa.getId();
         this.nome = empresa.getNome();
         this.cnpj = empresa.getCnpj();
-        this.idUsuario = empresa.getIdUsuario();
-    }
-  
-    @NotBlank
-    public long getId() {
-        return id;
     }
 
-    public void setId(@NotBlank long id) {
-        this.id = id;
+    @NotBlank
+    public Integer getId() {
+        return id_emp;
+    }
+
+    public void setId(@NotBlank Integer id_emp) {
+        this.id_emp = id_emp;
     }
 
     public @NotBlank(message = "O nome é obrigatório") String getNome() {
@@ -64,12 +59,5 @@ public class EmpresaDto {
         this.cnpj = cnpj;
     }
 
-    public @NotBlank(message = "O tipo de usuario é obrigatório") Usuario getIdUsuario() {
-        return idUsuario;
-    }
-
-    public void setIdUsuario(@NotBlank(message = "O tipo de usuario é obrigatório") Usuario idUsuario) {
-        this.idUsuario = idUsuario;
-    }
 
 }

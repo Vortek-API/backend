@@ -29,19 +29,19 @@ public class ColaboradorService {
         return colaboradorRepository.save(funcionario);
     }
 
-    public Colaborador buscarPorId(long id) {
+    public Colaborador buscarPorId(Integer id) {
         Optional<Colaborador> funcionario = colaboradorRepository.findById(id);
         return funcionario.orElseThrow(() -> new ObjectNotFoundException("Funcionário com id " + id + " não encontrado!"));
     }
 
-    public Boolean excluirFunc(long id) {
+    public Boolean excluirFunc(Integer id) {
         if (colaboradorRepository.existsById(id)) { // Verifica se o Funcionario existe
             colaboradorRepository.deleteById(id); // Deleta o Funcionario pelo ID
             return true;
         }
         return false; // Caso o Funcionario não exista
     }
-    public Colaborador atualizar(Long id, Colaborador colaboradorAtualizado) {
+    public Colaborador atualizar(Integer id, Colaborador colaboradorAtualizado) {
         return colaboradorRepository.findById(id).map(colaborador -> {
             colaborador.setCpf(colaboradorAtualizado.getCpf());
             colaborador.setNome(colaboradorAtualizado.getNome());
@@ -49,7 +49,7 @@ public class ColaboradorService {
             colaborador.setHora_ent(colaboradorAtualizado.getHora_ent());
             colaborador.setHora_sai(colaboradorAtualizado.getHora_sai());
             colaborador.setStatus(colaboradorAtualizado.isStatus());
-            colaborador.setId_empresa(colaboradorAtualizado.getId_empresa());
+            colaborador.setEmpresa(colaboradorAtualizado.getEmpresa());
             return colaboradorRepository.save(colaborador);
         }).orElse(null);
     }

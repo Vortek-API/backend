@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "Empresa")
+@Table(name = "empresa")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -16,27 +16,20 @@ public class Empresa {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false)
+    @Column(name = "id_emp")
+    private Integer id_emp;
+    @Column(name = "nome_emp", nullable = false)
     private String nome;
-
-    @Column(unique = true, nullable = false)
+    @Column(name = "cnpj_emp", nullable = false, unique = true)
     private String cnpj;
 
-    @Column
-    private String endereco;
 
-    @ManyToOne
-    @JoinColumn(name = "id_usuario", referencedColumnName = "id")
-    private Usuario idUsuario;
-
-    public Long getId() {
-        return id;
+    public Integer getId() {
+        return id_emp;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setId(Integer id) {
+        this.id_emp = id;
     }
 
     public String getNome() {
@@ -45,30 +38,14 @@ public class Empresa {
 
     public void setNome(String nome) {
         this.nome = nome;
-        }
+    }
 
     public String getCnpj() {
         return cnpj;
-        }
+    }
 
     public void setCnpj(String cnpj) {
         this.cnpj = cnpj;
-        }
-
-    public String getEndereco() {
-        return endereco;
-        }
-
-    public void setEndereco(String endereco) {
-        this.endereco = endereco;
-        }
-
-    public Usuario getIdUsuario() {
-        return this.idUsuario;
-        }
-
-    public void setIdUsuario(Usuario idUsuario) {
-        this.idUsuario = idUsuario;
-        }
+    }
 
 }

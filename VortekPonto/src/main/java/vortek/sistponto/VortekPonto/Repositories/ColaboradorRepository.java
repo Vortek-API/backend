@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import vortek.sistponto.VortekPonto.Models.Colaborador;
 
 @Repository
-public interface ColaboradorRepository extends JpaRepository<Colaborador, Long> {
+public interface ColaboradorRepository extends JpaRepository<Colaborador, Integer> {
 }

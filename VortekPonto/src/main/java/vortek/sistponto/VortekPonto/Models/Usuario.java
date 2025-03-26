@@ -4,19 +4,23 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "Usuario")
+@Table(name = "usuario")
 @EqualsAndHashCode(of = "id")
 public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
+    @Column(name = "id_usuario", nullable = false)
+    private Integer id;
     private String login;
     private String senha;
 
     @Enumerated(EnumType.STRING)  // Utilizando o Enum e armazenando o nome da constante como String
     private TipoUsuario tipoUsuario;
+
+    @ManyToOne
+    @JoinColumn(name = "empresa_id", referencedColumnName = "id_emp")
+    private Empresa idEmpresa;
 
     public Usuario() {
     }
@@ -27,11 +31,11 @@ public class Usuario {
         this.tipoUsuario = tipoUsuario;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -57,5 +61,13 @@ public class Usuario {
 
     public void setTipoUsuario(TipoUsuario tipoUsuario) {
         this.tipoUsuario = tipoUsuario;
+    }
+
+    public Empresa getIdEmpresa() {
+        return this.idEmpresa;
+    }
+
+    public void setIdEmpresa(Empresa idEmpresa) {
+        this.idEmpresa = idEmpresa;
     }
 }

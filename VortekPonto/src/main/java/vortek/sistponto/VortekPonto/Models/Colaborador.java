@@ -6,42 +6,55 @@ import lombok.*;
 import java.time.LocalTime;
 
 @Entity
-@Table(name="Colaborador")
+@Table(name="colaborador")
 @EqualsAndHashCode(of = "id")
 public class Colaborador {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id_col")
+    private Integer id;
+
+    @Column(name = "cpf_col", nullable = false, unique = true)
     private String cpf;
+
+    @Column(name = "nome_col", nullable = false)
     private String nome;
+
+    @Column(name = "cargo_col", nullable = false)
     private String cargo;
+
+    @Column(name = "hor_ent", nullable = false)
     private LocalTime hora_ent;
+
+    @Column(name = "hor_sai")
     private LocalTime hora_sai;
+
+    @Column(name = "st_col", nullable = false)
     private boolean status;
 
     @ManyToOne
-    @JoinColumn(name = "Empresa_id")
-    private Empresa id_empresa;
+    @JoinColumn(name = "empresa_id", referencedColumnName = "id_emp", nullable = false )
+    private Empresa empresa;
 
     public Colaborador() {
     }
 
-    public Colaborador(String cpf, String nome, String cargo, LocalTime hora_ent, LocalTime hora_sai, boolean status, Empresa id_empresa) {
+    public Colaborador(String cpf, String nome, String cargo, LocalTime hora_ent, LocalTime hora_sai, boolean status, Empresa empresa) {
         this.cpf = cpf;
         this.nome = nome;
         this.cargo = cargo;
         this.hora_ent = hora_ent;
         this.hora_sai = hora_sai;
         this.status = status;
-        this.id_empresa = id_empresa;
+        this.empresa = empresa;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -93,11 +106,11 @@ public class Colaborador {
         this.status = status;
     }
 
-    public Empresa getId_empresa() {
-        return id_empresa;
+    public Empresa getEmpresa() {
+        return empresa;
     }
 
-    public void setId_empresa(Empresa id_empresa) {
-        this.id_empresa = id_empresa;
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
     }
 }

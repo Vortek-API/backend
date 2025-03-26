@@ -37,7 +37,7 @@ public class ColaboradorController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> buscarPorId(@PathVariable long id) {
+    public ResponseEntity<?> buscarPorId(@PathVariable Integer id) {
         try{
             Colaborador funcionario = colaboradorService.buscarPorId(id);
             if(funcionario == null) {
@@ -52,7 +52,7 @@ public class ColaboradorController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> excluirFunc(@PathVariable long id) {
+    public ResponseEntity<?> excluirFunc(@PathVariable Integer id) {
         boolean isDeleted = colaboradorService.excluirFunc(id);
         if (isDeleted) {
             return ResponseEntity.ok().build();  // 204 No Content
@@ -62,7 +62,7 @@ public class ColaboradorController {
 
     }
     @PutMapping("/{id}")
-    public ResponseEntity<Colaborador> atualizar(@PathVariable Long id, @RequestBody Colaborador colaboradorAtualizado) {
+    public ResponseEntity<Colaborador> atualizar(@PathVariable Integer id, @RequestBody Colaborador colaboradorAtualizado) {
         Colaborador colaborador = colaboradorService.atualizar(id, colaboradorAtualizado);
         return colaborador != null ? ResponseEntity.ok(colaborador) : ResponseEntity.notFound().build();
     }

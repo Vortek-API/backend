@@ -6,6 +6,6 @@ import vortek.sistponto.VortekPonto.Models.Empresa;
 
 
 @Repository
-public interface EmpresaRepository extends JpaRepository<Empresa, Long> {
+public interface EmpresaRepository extends JpaRepository<Empresa, Integer> {
     boolean existsByCnpj(String cnpj);
 }

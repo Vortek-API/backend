@@ -10,7 +10,7 @@ public class ColaboradorDto {
 
     @NotBlank
     @Column(name = "id_col", nullable = false)
-    private Long id;
+    private Integer id;
 
     @NotBlank
     @Column(name = "cpf_col", nullable = false, unique = true)
@@ -37,20 +37,20 @@ public class ColaboradorDto {
     private boolean status;
 
     @NotBlank
-    @Column(name = "Empresa_id_emp", nullable = false)
-    private Long id_empresa;
+    @Column(name = "empresa_id", nullable = false)
+    private Integer empresa;
 
     public ColaboradorDto() {
     }
 
-    public ColaboradorDto(String cpf, String nome, String cargo, LocalTime hora_ent, LocalTime hora_sai, boolean status, Long id_empresa) {
+    public ColaboradorDto(String cpf, String nome, String cargo, LocalTime hora_ent, LocalTime hora_sai, boolean status, Integer empresa) {
         this.cpf = cpf;
         this.nome = nome;
         this.cargo = cargo;
         this.hora_ent = hora_ent;
         this.hora_sai = hora_sai;
         this.status = status;
-        this.id_empresa = id_empresa;
+        this.empresa = empresa;
     }
 
     public ColaboradorDto(Colaborador func) {
@@ -62,11 +62,11 @@ public class ColaboradorDto {
         this.status = func.isStatus();
     }
 
-    public @NotBlank Long getId() {
+    public @NotBlank Integer getId() {
         return id;
     }
 
-    public void setId(@NotBlank Long id) {
+    public void setId(@NotBlank Integer id) {
         this.id = id;
     }
 
@@ -119,11 +119,11 @@ public class ColaboradorDto {
         this.status = status;
     }
 
-    public @NotBlank Long getId_empresa() {
-        return id_empresa;
+    public @NotBlank Integer getEmpresa() {
+        return empresa;
     }
 
-    public void setId_empresa(@NotBlank Long id_empresa) {
-        this.id_empresa = id_empresa;
+    public void setEmpresa(@NotBlank Integer id_empresa) {
+        this.empresa = id_empresa;
     }
 }

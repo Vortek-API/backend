@@ -53,7 +53,7 @@ public class EmpresaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EmpresaDto> buscarPorId(@PathVariable long id) {
+    public ResponseEntity<EmpresaDto> buscarPorId(@PathVariable Integer id) {
         EmpresaDto emp = empresaService.buscarPorId(id);
         if (emp == null) {
             return ResponseEntity.notFound().build();

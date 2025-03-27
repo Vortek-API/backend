@@ -1,0 +1,58 @@
+### IntelliJ IDEA ###
+.idea/
+*.iml
+*.iws
+
+### Eclipse ###
+.project
+.classpath
+.settings/
+*.launch
+
+### VS Code ###
+.vscode/
+
+### Maven ###
+/target/
+*.log
+.mvn/
+mvnw*
+
+### Gradle ###
+/.gradle/
+/build/
+
+### OS Specific ###
+.DS_Store
+Thumbs.db
+
+### Logs ###
+*.log
+
+### Spring Boot ###
+/VortekPonto/target/
+/VortekPonto/.mvn/
+/VortekPonto/mvnw*
+/VortekPonto/*.jar
+/VortekPonto/*.war
+
+### Misc ###
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+*.7z
+*.bak
+*.swp
+*~
+*.tmp
+*.out
+
+### Secrets ###
+application.properties
+application.yml
+application-*.properties
+application-*.yml

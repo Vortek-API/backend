@@ -6,8 +6,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
-@Table(name = "Empresa")
+@Table(name = "empresa")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -16,27 +19,43 @@ public class Empresa {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false)
+    @Column(name = "id_emp")
+    private Integer id_emp;
+    @Column(name = "nome_emp", nullable = false)
     private String nome;
-
-    @Column(unique = true, nullable = false)
+    @Column(name = "cnpj_emp", nullable = false, unique = true)
     private String cnpj;
 
-    @Column
-    private String endereco;
+    @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL)
+    private List<Colaborador> colaboradores = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name = "id_usuario", referencedColumnName = "id")
-    private Usuario idUsuario;
 
-    public Long getId() { return id; }
-    public String getNome() { return nome; }
-    public void setNome(String nome) { this.nome = nome; }
-    public String getCnpj() { return cnpj; }
-    public void setCnpj(String cnpj) { this.cnpj = cnpj; }
-    public String getEndereco() { return endereco; }
-    public void setEndereco(String endereco) { this.endereco = endereco; }
-    public void setIdUsuario(Usuario idUsuario) { this.idUsuario = idUsuario; }
+    public Integer getId() {
+        return id_emp;
+    }
+
+    public void setId(Integer id) {
+        this.id_emp = id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getCnpj() {
+        return cnpj;
+    }
+
+    public void setCnpj(String cnpj) {
+        this.cnpj = cnpj;
+    }
+
+    public List<Colaborador> getColaboradores() {
+        return colaboradores;
+    }
+
 }

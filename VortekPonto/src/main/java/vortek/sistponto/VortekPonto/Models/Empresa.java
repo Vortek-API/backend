@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "empresa")
 @Getter
@@ -22,6 +25,9 @@ public class Empresa {
     private String nome;
     @Column(name = "cnpj_emp", nullable = false, unique = true)
     private String cnpj;
+
+    @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL)
+    private List<Colaborador> colaboradores = new ArrayList<>();
 
 
     public Integer getId() {
@@ -46,6 +52,10 @@ public class Empresa {
 
     public void setCnpj(String cnpj) {
         this.cnpj = cnpj;
+    }
+
+    public List<Colaborador> getColaboradores() {
+        return colaboradores;
     }
 
 }

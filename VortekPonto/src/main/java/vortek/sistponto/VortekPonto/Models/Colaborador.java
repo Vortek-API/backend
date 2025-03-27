@@ -31,7 +31,7 @@ public class Colaborador {
     private LocalTime hora_sai;
 
     @Column(name = "st_col", nullable = false)
-    private boolean status;
+    private boolean st_col;
 
     @ManyToOne
     @JoinColumn(name = "empresa_id", referencedColumnName = "id_emp", nullable = false )
@@ -40,13 +40,13 @@ public class Colaborador {
     public Colaborador() {
     }
 
-    public Colaborador(String cpf, String nome, String cargo, LocalTime hora_ent, LocalTime hora_sai, boolean status, Empresa empresa) {
+    public Colaborador(String cpf, String nome, String cargo, LocalTime hora_ent, LocalTime hora_sai, boolean st_col, Empresa empresa) {
         this.cpf = cpf;
         this.nome = nome;
         this.cargo = cargo;
         this.hora_ent = hora_ent;
         this.hora_sai = hora_sai;
-        this.status = status;
+        this.st_col = st_col;
         this.empresa = empresa;
     }
 
@@ -99,11 +99,11 @@ public class Colaborador {
     }
 
     public boolean isStatus() {
-        return status;
+        return st_col;
     }
 
-    public void setStatus(boolean status) {
-        this.status = status;
+    public void setStatus(boolean st_col) {
+        this.st_col = st_col;
     }
 
     public Empresa getEmpresa() {

@@ -43,14 +43,16 @@ public class EmpresaService {
     public EmpresaDto buscarPorId(Integer id) {
         Empresa empresa = empresaRepository.findById(id).get();
         if (empresa == null) {
-            throw new ObjectNotFoundException("Event: " + id + " not found!");
+            throw new ObjectNotFoundException("Empresa: " + id + " não encontrada!");
         }
         return new EmpresaDto(empresa);
     }
 
-    public String deletarEmpresa(Integer id_emp) {
-        if (empresaRepository.existsById(id_emp)) {
-            empresaRepository.deleteById(id_emp);
+    public String deletarEmpresa(Integer id) {
+        Empresa emp = empresaRepository.findById(id).get();
+        if (emp != null) {
+            System.out.println(emp.getCnpj());
+            empresaRepository.delete(emp);
             return "Empresa deletada com sucesso!";
         } else {
             throw new RuntimeException("Empresa não encontrada!");

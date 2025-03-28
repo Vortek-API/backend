@@ -1,14 +1,16 @@
 package vortek.sistponto.VortekPonto.Services;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import vortek.sistponto.VortekPonto.Dto.EmpresaDto;
 import vortek.sistponto.VortekPonto.Models.Empresa;
 import vortek.sistponto.VortekPonto.Repositories.EmpresaRepository;
 import vortek.sistponto.VortekPonto.Services.Exceptions.ObjectNotFoundException;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -46,4 +48,29 @@ public class EmpresaService {
         return new EmpresaDto(empresa);
     }
 
+    public String deletarEmpresa(Integer id_emp) {
+        if (empresaRepository.existsById(id_emp)) {
+            empresaRepository.deleteById(id_emp);
+            return "Empresa deletada com sucesso!";
+        } else {
+            throw new RuntimeException("Empresa não encontrada!");
+        }
+    }
+
+    public EmpresaDto atualizarEmpresa(Integer id, EmpresaDto empresaDto) {
+        Optional<Empresa> empresaOptional = empresaRepository.findById(id);
+        
+        if (!empresaOptional.isPresent()) {
+            throw new ObjectNotFoundException("Empresa não encontrada!");
+        }
+    
+        Empresa empresa = empresaOptional.get();
+        empresa.setNome(empresaDto.getNome());
+        empresa.setCnpj(empresaDto.getCnpj());
+    
+        empresa = empresaRepository.save(empresa);
+    
+        return new EmpresaDto(empresa);
+    }
+    
 }

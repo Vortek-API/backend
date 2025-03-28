@@ -1,3 +1,5 @@
+package vortek.sistponto.VortekPonto.Models;
+
 public class ValidadorCPF {
 
     public static String validarCPF(String cpf) {

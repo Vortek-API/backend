@@ -1,15 +1,24 @@
 package vortek.sistponto.VortekPonto.Controllers;
 
+import java.net.URI;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
 import vortek.sistponto.VortekPonto.Dto.EmpresaDto;
 import vortek.sistponto.VortekPonto.Models.Empresa;
 import vortek.sistponto.VortekPonto.Services.EmpresaService;
-
-import java.net.URI;
-import java.util.List;
+import vortek.sistponto.VortekPonto.Services.Exceptions.ObjectNotFoundException;
 
 @RestController
 @RequestMapping("/empresa")
@@ -52,12 +61,24 @@ public class EmpresaController {
         return ResponseEntity.ok().body(emp);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<EmpresaDto> buscarPorId(@PathVariable Integer id) {
-        EmpresaDto emp = empresaService.buscarPorId(id);
-        if (emp == null) {
-            return ResponseEntity.notFound().build();
+    @DeleteMapping("/empresa/{id_emp}")
+    public ResponseEntity<String> deletarEmpresa(@PathVariable Integer id_emp) {
+        try {
+            String resultado = empresaService.deletarEmpresa(id_emp);
+            return ResponseEntity.ok(resultado); 
+        } catch (Exception e) {
+            return ResponseEntity.status(404).body("Empresa não encontrada!");
         }
-        return ResponseEntity.ok().body(emp);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<EmpresaDto> atualizarEmpresa(@PathVariable Integer id, @RequestBody EmpresaDto empresaDto) {
+    try {
+        EmpresaDto updatedEmpresa = empresaService.atualizarEmpresa(id, empresaDto);
+        return ResponseEntity.ok(updatedEmpresa); 
+    } catch (ObjectNotFoundException e) {
+        return ResponseEntity.status(404).body(null); 
+    }
+}
+    
 }

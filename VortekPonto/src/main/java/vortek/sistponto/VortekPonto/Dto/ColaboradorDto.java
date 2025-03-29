@@ -2,51 +2,42 @@ package vortek.sistponto.VortekPonto.Dto;
 
 import java.time.LocalTime;
 
-import jakarta.persistence.Column;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import vortek.sistponto.VortekPonto.Models.Colaborador;
 
 public class ColaboradorDto {
 
-    @NotBlank
-    @Column(name = "id_col", nullable = false)
+    @NotNull
     private Integer id;
 
-    @NotBlank
-    @Column(name = "cpf_col", nullable = false, unique = true)
-    private String cpf;
+    @NotNull
+    private String cpf_col;
 
-    @NotBlank
-    @Column(name = "nome_col", nullable = false)
-    private String nome;
+    @NotNull
+    private String nome_col;
 
-    @NotBlank
-    @Column(name = "cargo_col", nullable = false)
-    private String cargo;
+    @NotNull
+    private String cargo_col;
 
-    @NotBlank
-    @Column(name = "hor_ent", nullable = false)
+    @NotNull
     private LocalTime hora_ent;
 
-    @NotBlank
-    @Column(name = "hor_sai", nullable = false)
+    @NotNull
     private LocalTime hora_sai;
 
-    @NotBlank
-    @Column(name = "st_col", nullable = false)
+    @NotNull
     private boolean status;
 
-    @NotBlank
-    @Column(name = "empresa_id", nullable = false)
+    @NotNull
     private Integer empresa;
 
-    public ColaboradorDto() {
-    }
+    public ColaboradorDto() {}
 
-    public ColaboradorDto(String cpf, String nome, String cargo, LocalTime hora_ent, LocalTime hora_sai, boolean status, Integer empresa) {
-        this.cpf = cpf;
-        this.nome = nome;
-        this.cargo = cargo;
+    public ColaboradorDto(Integer id, String cpf, String nome, String cargo, LocalTime hora_ent, LocalTime hora_sai, boolean status, Integer empresa) {
+        this.id = id;
+        this.cpf_col = cpf;
+        this.nome_col = nome;
+        this.cargo_col = cargo;
         this.hora_ent = hora_ent;
         this.hora_sai = hora_sai;
         this.status = status;
@@ -54,76 +45,77 @@ public class ColaboradorDto {
     }
 
     public ColaboradorDto(Colaborador func) {
-        this.cpf = func.getCpf();
-        this.nome = func.getNome();
-        this.cargo = func.getCargo();
+        this.id = func.getId();
+        this.cpf_col = func.getCpf();
+        this.nome_col = func.getNome();
+        this.cargo_col = func.getCargo();
         this.hora_ent = func.getHora_ent();
         this.hora_sai = func.getHora_sai();
         this.status = func.isStatus();
+        this.empresa = func.getEmpresa().getId();
     }
 
-    public @NotBlank Integer getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(@NotBlank Integer id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public @NotBlank String getCpf() {
-        return cpf;
+    public String getCpf() {
+        return cpf_col;
     }
 
-    public void setCpf(@NotBlank String cpf) {
-        this.cpf = cpf;
+    public void setCpf(String cpf) {
+        this.cpf_col = cpf;
     }
 
-    public @NotBlank String getNome() {
-        return nome;
+    public String getNome() {
+        return nome_col;
     }
 
-    public void setNome(@NotBlank String nome) {
-        this.nome = nome;
+    public void setNome(String nome) {
+        this.nome_col = nome;
     }
 
-    public @NotBlank String getCargo() {
-        return cargo;
+    public String getCargo() {
+        return cargo_col;
     }
 
-    public void setCargo(@NotBlank String cargo) {
-        this.cargo = cargo;
+    public void setCargo(String cargo) {
+        this.cargo_col = cargo;
     }
 
-    public @NotBlank LocalTime getHora_ent() {
+    public LocalTime getHora_ent() {
         return hora_ent;
     }
 
-    public void setHora_ent(@NotBlank LocalTime hora_ent) {
+    public void setHora_ent(LocalTime hora_ent) {
         this.hora_ent = hora_ent;
     }
 
-    public @NotBlank LocalTime getHora_sai() {
+    public LocalTime getHora_sai() {
         return hora_sai;
     }
 
-    public void setHora_sai(@NotBlank LocalTime hora_sai) {
+    public void setHora_sai(LocalTime hora_sai) {
         this.hora_sai = hora_sai;
     }
 
-    @NotBlank
     public boolean isStatus() {
         return status;
     }
 
-    public void setStatus(@NotBlank boolean status) {
+    public void setStatus(boolean status) {
         this.status = status;
     }
 
-    public @NotBlank Integer getEmpresa() {
+    public Integer getEmpresa() {
         return empresa;
     }
 
-    public void setEmpresa(@NotBlank Integer id_empresa) {
-        this.empresa = id_empresa;
+    public void setEmpresa(Integer empresa) {
+        this.empresa = empresa;
     }
 }

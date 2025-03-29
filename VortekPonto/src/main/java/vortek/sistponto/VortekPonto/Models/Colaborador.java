@@ -15,6 +15,8 @@ import java.time.LocalTime;
 //import jakarta.persistence.Table;
 //import lombok.EqualsAndHashCode;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name="colaborador")
 @EqualsAndHashCode(of = "id")
@@ -45,6 +47,7 @@ public class Colaborador {
 
     @ManyToOne
     @JoinColumn(name = "empresa_id", referencedColumnName = "id_emp", nullable = false )
+    @JsonIgnore
     private Empresa empresa;
 
     public Colaborador() {

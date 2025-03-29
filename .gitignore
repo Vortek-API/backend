@@ -56,3 +56,12 @@ application.properties
 application.yml
 application-*.properties
 application-*.yml
+/VortekPonto/target
+/VortekPonto/target/classes/vortek/sistponto/VortekPonto/Controllers/*.class
+/VortekPonto/target/classes/vortek/sistponto/VortekPonto/*.class
+/VortekPonto/target/classes/vortek/sistponto/*.class
+/VortekPonto/target/classes/vortek/*.class
+/VortekPonto/target/classes/*.class
+/VortekPonto/target/classes/*.class
+/VortekPonto/target/*.class
+*.class

@@ -1,12 +1,13 @@
 package vortek.sistponto.VortekPonto.Models;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import vortek.sistponto.VortekPonto.Configs.Json.EmpresaSerializer;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -27,7 +28,8 @@ public class Empresa {
     private String cnpj;
 
     @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL)
-    private List<Colaborador> colaboradores = new ArrayList<>();
+    @JsonSerialize(using = EmpresaSerializer.class)
+    private List<Colaborador> colaboradores;
 
 
     public Integer getId() {

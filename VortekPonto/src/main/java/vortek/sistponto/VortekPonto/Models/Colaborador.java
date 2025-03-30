@@ -1,24 +1,12 @@
 package vortek.sistponto.VortekPonto.Models;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.EqualsAndHashCode;
 
 import java.time.LocalTime;
 
-//import jakarta.persistence.Column;
-//import jakarta.persistence.Entity;
-//import jakarta.persistence.GeneratedValue;
-//import jakarta.persistence.GenerationType;
-//import jakarta.persistence.Id;
-//import jakarta.persistence.JoinColumn;
-//import jakarta.persistence.ManyToOne;
-//import jakarta.persistence.Table;
-//import lombok.EqualsAndHashCode;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 @Entity
-@Table(name="colaborador")
+@Table(name = "colaborador")
 @EqualsAndHashCode(of = "id")
 public class Colaborador {
 
@@ -46,8 +34,7 @@ public class Colaborador {
     private boolean st_col;
 
     @ManyToOne
-    @JoinColumn(name = "empresa_id", referencedColumnName = "id_emp", nullable = false )
-    @JsonIgnore
+    @JoinColumn(name = "empresa_id", referencedColumnName = "id_emp", nullable = false)
     private Empresa empresa;
 
     public Colaborador() {

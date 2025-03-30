@@ -1,4 +1,4 @@
-package vortek.sistponto.VortekPonto;
+package vortek.sistponto.VortekPonto.Configs.Web;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

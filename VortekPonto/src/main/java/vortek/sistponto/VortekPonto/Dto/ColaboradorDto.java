@@ -1,9 +1,9 @@
 package vortek.sistponto.VortekPonto.Dto;
 
-import java.time.LocalTime;
-
 import jakarta.validation.constraints.NotNull;
 import vortek.sistponto.VortekPonto.Models.Colaborador;
+
+import java.time.LocalTime;
 
 public class ColaboradorDto {
 
@@ -31,7 +31,8 @@ public class ColaboradorDto {
     @NotNull
     private Integer empresa;
 
-    public ColaboradorDto() {}
+    public ColaboradorDto() {
+    }
 
     public ColaboradorDto(Integer id, String cpf, String nome, String cargo, LocalTime hora_ent, LocalTime hora_sai, boolean status, Integer empresa) {
         this.id = id;

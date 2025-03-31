@@ -22,6 +22,7 @@ public class EmpresaService {
         if (empresaRepository.existsByCnpj(empresa.getCnpj())) {
             throw new RuntimeException("CNPJ já cadastrado!");
         }
+        empresa.setId(null);
         return empresaRepository.save(empresa);
     }
 
@@ -115,5 +116,4 @@ public class EmpresaService {
         return Character.getNumericValue(cnpj.charAt(12)) == digit1 &&
                 Character.getNumericValue(cnpj.charAt(13)) == digit2;
     }
-
 }

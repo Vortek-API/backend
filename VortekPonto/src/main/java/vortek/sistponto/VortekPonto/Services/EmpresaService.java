@@ -1,15 +1,16 @@
 package vortek.sistponto.VortekPonto.Services;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import vortek.sistponto.VortekPonto.Dto.EmpresaDto;
 import vortek.sistponto.VortekPonto.Models.Empresa;
 import vortek.sistponto.VortekPonto.Repositories.EmpresaRepository;
 import vortek.sistponto.VortekPonto.Services.Exceptions.ObjectNotFoundException;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -24,14 +25,6 @@ public class EmpresaService {
         }
         empresa.setId(null);
         return empresaRepository.save(empresa);
-    }
-
-    public EmpresaDto criarEmpresa(EmpresaDto empresa) {
-        Empresa emp = new Empresa();
-        emp.setNome(empresa.getNome());
-        emp.setCnpj(empresa.getCnpj());
-        emp = empresaRepository.save(emp);
-        return new EmpresaDto(emp);
     }
 
     public List<EmpresaDto> listarEmpresas() {

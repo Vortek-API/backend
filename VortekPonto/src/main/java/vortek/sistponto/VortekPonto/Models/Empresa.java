@@ -1,14 +1,17 @@
 package vortek.sistponto.VortekPonto.Models;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import jakarta.persistence.*;
+import java.sql.Blob;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import vortek.sistponto.VortekPonto.Configs.Json.EmpresaSerializer;
-
-import java.util.List;
 
 @Entity
 @Table(name = "empresa")
@@ -20,22 +23,21 @@ public class Empresa {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_emp")
+    @Column(name = "id")
     private Integer id_emp;
-    @Column(name = "nome_emp", nullable = false)
+    @Column(name = "nome", nullable = false)
     private String nome;
-    @Column(name = "cnpj_emp", nullable = false, unique = true)
+    @Column(name = "cnpj", nullable = false, unique = true)
     private String cnpj;
-
-    @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL)
-    @JsonSerialize(using = EmpresaSerializer.class)
-    private List<Colaborador> colaboradores;
+    @Column(name = "telefone", nullable = false, unique = true)
+    private String telefone;
+    @Column(name = "logo", nullable = false, unique = true)
+    private Blob logo;
 
 
     public Integer getId() {
         return id_emp;
     }
-
     public void setId(Integer id) {
         this.id_emp = id;
     }
@@ -43,7 +45,6 @@ public class Empresa {
     public String getNome() {
         return nome;
     }
-
     public void setNome(String nome) {
         this.nome = nome;
     }
@@ -51,13 +52,21 @@ public class Empresa {
     public String getCnpj() {
         return cnpj;
     }
-
     public void setCnpj(String cnpj) {
         this.cnpj = cnpj;
     }
-
-    public List<Colaborador> getColaboradores() {
-        return colaboradores;
+    
+    public String getTelefone() {
+        return telefone;
+    }
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
     }
 
+    public Blob getLogo() {
+        return logo;
+    }
+    public void setLogo(Blob logo) {
+        this.logo = logo;
+    }
 }

@@ -41,7 +41,7 @@ public class ColaboradorController {
     @PostMapping
     public ResponseEntity<?> criar(@RequestBody Colaborador colaborador) {
         try {
-            if (colaborador.getEmpresa() == null || colaborador.getEmpresa().getId_emp() == null) {
+            if (colaborador.getEmpresa() == null || colaborador.getEmpresa().getId() == null) {
                 return ResponseEntity.badRequest().body("Erro: O ID da empresa é obrigatório!");
             }
 

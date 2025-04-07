@@ -83,9 +83,9 @@ public class ColaboradorService {
             colaborador.setCpf(colaboradorAtualizado.getCpf());
             colaborador.setNome(colaboradorAtualizado.getNome());
             colaborador.setCargo(colaboradorAtualizado.getCargo());
-            colaborador.setHora_ent(colaboradorAtualizado.getHora_ent());
-            colaborador.setHora_sai(colaboradorAtualizado.getHora_sai());
-            colaborador.setStatus(colaboradorAtualizado.isStatus());
+            colaborador.setHorarioEntrada(colaboradorAtualizado.getHorarioEntrada());
+            colaborador.setHorarioSaida(colaboradorAtualizado.getHorarioSaida());
+            colaborador.setStatus_ativo(colaboradorAtualizado.isStatus_ativo());
             colaborador.setEmpresa(colaboradorAtualizado.getEmpresa());
             return colaboradorRepository.save(colaborador);
         }).orElse(null);

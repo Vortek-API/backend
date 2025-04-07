@@ -45,16 +45,16 @@ public class ColaboradorDto {
         this.empresa = empresa;
     }
 
-    public ColaboradorDto(Colaborador func) {
+    /*public ColaboradorDto(Colaborador func) {
         this.id = func.getId();
         this.cpf_col = func.getCpf();
         this.nome_col = func.getNome();
         this.cargo_col = func.getCargo();
-        this.hora_ent = func.getHora_ent();
-        this.hora_sai = func.getHora_sai();
+        this.hora_ent = func.getHorarioEntrada();
+        this.hora_sai = func.getHorarioSaida();
         this.status = func.isStatus();
         this.empresa = func.getEmpresa().getId();
-    }
+    }*/
 
     public Integer getId() {
         return id;

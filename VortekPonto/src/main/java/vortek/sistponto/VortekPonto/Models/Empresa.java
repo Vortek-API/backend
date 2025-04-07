@@ -1,17 +1,15 @@
 package vortek.sistponto.VortekPonto.Models;
 
 import java.sql.Blob;
+import java.util.List;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import vortek.sistponto.VortekPonto.Configs.Json.EmpresaSerializer;
 
 @Entity
 @Table(name = "empresa")
@@ -24,7 +22,7 @@ public class Empresa {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id_emp;
+    private Integer id;
     @Column(name = "nome", nullable = false)
     private String nome;
     @Column(name = "cnpj", nullable = false, unique = true)
@@ -34,8 +32,15 @@ public class Empresa {
     @Column(name = "logo", nullable = false, unique = true)
     private Blob logo;
 
+    @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL)
+    @JsonSerialize(using = EmpresaSerializer.class)
+    private List<Colaborador> colaboradores;
 
-    public Integer getId() {
+    @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL)
+    @JsonSerialize(using = EmpresaSerializer.class)
+    private List<Usuario> usuarios;
+
+    /*public Integer getId() {
         return id_emp;
     }
     public void setId(Integer id) {
@@ -68,5 +73,5 @@ public class Empresa {
     }
     public void setLogo(Blob logo) {
         this.logo = logo;
-    }
+    }*/
 }

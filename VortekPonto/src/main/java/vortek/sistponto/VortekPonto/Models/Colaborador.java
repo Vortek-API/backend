@@ -1,60 +1,75 @@
 package vortek.sistponto.VortekPonto.Models;
 
-import java.time.LocalTime;
+import jakarta.persistence.*;
+import lombok.*;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import lombok.EqualsAndHashCode;
+import java.sql.Blob;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @Table(name = "colaborador")
 @EqualsAndHashCode(of = "id")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Colaborador {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_col")
+    @Column(name = "id")
     private Integer id;
 
-    @Column(name = "cpf_col", nullable = false, unique = true)
+    @Column(name = "cpf", nullable = false, unique = true)
     private String cpf;
 
-    @Column(name = "nome_col", nullable = false)
+    @Column(name = "nome", nullable = false)
     private String nome;
 
-    @Column(name = "cargo_col", nullable = false)
+    @Column(name = "cargo", nullable = false)
     private String cargo;
 
-    @Column(name = "hor_ent", nullable = false)
-    private LocalTime hora_ent;
+    @Column(name = "horario_entrada", nullable = false)
+    private LocalTime horarioEntrada;
 
-    @Column(name = "hor_sai")
-    private LocalTime hora_sai;
+    @Column(name = "horario_saida")
+    private LocalTime horarioSaida;
 
-    @Column(name = "st_col", nullable = false)
-    private boolean st_col;
+    @Column(name = "status_ativo", nullable = false)
+    private boolean status_ativo;
+
+    @Column(name = "endereco", nullable = false)
+    private String endereco;
+
+    @Column(name = "email", nullable = false)
+    private String email;
+
+    @Column(name = "data_cadastro", nullable = false)
+    private LocalDateTime dataCadastro;
+
+    @Column(name = "foto", nullable = false)
+    private Blob foto;
 
     @ManyToOne
     @JoinColumn(name = "empresa_id", referencedColumnName = "id", nullable = false)
     private Empresa empresa;
 
-    public Colaborador() {
+    /*public Colaborador() {
     }
 
-    public Colaborador(String cpf, String nome, String cargo, LocalTime hora_ent, LocalTime hora_sai, boolean st_col, Empresa empresa) {
+    public Colaborador(String cpf, String nome, String cargo, LocalTime horarioEntrada, LocalTime horarioSaida, boolean status_ativo, String endereco, String email, LocalDateTime dataCadastro, Blob foto, Empresa empresa) {
         this.cpf = cpf;
         this.nome = nome;
         this.cargo = cargo;
-        this.hora_ent = hora_ent;
-        this.hora_sai = hora_sai;
-        this.st_col = st_col;
+        this.horarioEntrada = horarioEntrada;
+        this.horarioSaida = horarioSaida;
+        this.status_ativo = status_ativo;
         this.empresa = empresa;
+        this.endereco = endereco;
+        this.email =  email;
+        this.dataCadastro = dataCadastro;
+        this.foto = foto;
     }
 
     public Integer getId() {
@@ -89,28 +104,28 @@ public class Colaborador {
         this.cargo = cargo;
     }
 
-    public LocalTime getHora_ent() {
-        return hora_ent;
+    public LocalTime getHorarioEntrada() {
+        return horarioEntrada;
     }
 
-    public void setHora_ent(LocalTime hora_ent) {
-        this.hora_ent = hora_ent;
+    public void setHorarioEntrada(LocalTime hora_ent) {
+        this.horarioEntrada = hora_ent;
     }
 
-    public LocalTime getHora_sai() {
-        return hora_sai;
+    public LocalTime getHorarioSaida() {
+        return horarioSaida;
     }
 
-    public void setHora_sai(LocalTime hora_sai) {
-        this.hora_sai = hora_sai;
+    public void setHorarioSaida(LocalTime hora_sai) {
+        this.horarioSaida = hora_sai;
     }
 
     public boolean isStatus() {
-        return st_col;
+        return status_ativo;
     }
 
     public void setStatus(boolean st_col) {
-        this.st_col = st_col;
+        this.status_ativo = st_col;
     }
 
     public Empresa getEmpresa() {
@@ -119,5 +134,5 @@ public class Colaborador {
 
     public void setEmpresa(Empresa empresa) {
         this.empresa = empresa;
-    }
+    }*/
 }

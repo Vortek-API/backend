@@ -10,34 +10,38 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 @Entity
 @Table(name = "usuario")
 @EqualsAndHashCode(of = "id")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_usuario", nullable = false)
+    @Column(name = "id", nullable = false)
     private Integer id;
     private String login;
     private String senha;
 
     @Enumerated(EnumType.STRING)  // Utilizando o Enum e armazenando o nome da constante como String
-    private TipoUsuario tipoUsuario;
+    private TipoUsuario grupo;
 
     @ManyToOne
     @JoinColumn(name = "empresa_id", referencedColumnName = "id")
-    private Empresa idEmpresa;
+    private Empresa empresa;
 
-    public Usuario() {
+    /*public Usuario() {
     }
 
-    public Usuario(String login, String senha, TipoUsuario tipoUsuario) {
+    public Usuario(String login, String senha, TipoUsuario grupo) {
         this.login = login;
         this.senha = senha;
-        this.tipoUsuario = tipoUsuario;
+        this.grupo = grupo;
     }
 
     public Integer getId() {
@@ -64,12 +68,12 @@ public class Usuario {
         this.senha = senha;
     }
 
-    public TipoUsuario getTipoUsuario() {
-        return tipoUsuario;
+    public TipoUsuario getGrupo() {
+        return grupo;
     }
 
-    public void setTipoUsuario(TipoUsuario tipoUsuario) {
-        this.tipoUsuario = tipoUsuario;
+    public void setGrupo(TipoUsuario tipoUsuario) {
+        this.grupo = tipoUsuario;
     }
 
     public Empresa getIdEmpresa() {
@@ -78,5 +82,5 @@ public class Usuario {
 
     public void setIdEmpresa(Empresa idEmpresa) {
         this.idEmpresa = idEmpresa;
-    }
+    }*/
 }

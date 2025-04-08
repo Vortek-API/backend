@@ -1,5 +1,6 @@
 package vortek.sistponto.VortekPonto.Services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -27,18 +28,18 @@ public class EmpresaService {
         return empresaRepository.save(empresa);
     }
 
-    public List<EmpresaDto> listarEmpresas() {
+    public List<Empresa> listarEmpresas() {
         List<Empresa> empresas = empresaRepository.findAll();
-        return empresas.stream().map(EmpresaDto::new).collect(Collectors.toList());
+        return new ArrayList<>(empresas);
 
     }
 
-    public EmpresaDto buscarPorId(Integer id) {
+    public Empresa buscarPorId(Integer id) {
         Empresa empresa = empresaRepository.findById(id).get();
         if (empresa == null) {
             throw new ObjectNotFoundException("Empresa: " + id + " não encontrada!");
         }
-        return new EmpresaDto(empresa);
+        return empresa;
     }
 
     public String deletarEmpresa(Integer id) {
@@ -52,25 +53,25 @@ public class EmpresaService {
         }
     }
 
-    public EmpresaDto atualizarEmpresa(Integer id, EmpresaDto empresaDto) {
+    public Empresa atualizarEmpresa(Integer id, Empresa empresa) {
         Optional<Empresa> empresaOptional = empresaRepository.findById(id);
 
         if (!empresaOptional.isPresent()) {
             throw new ObjectNotFoundException("Empresa não encontrada!");
         }
 
-        Empresa empresa = empresaOptional.get();
-        empresa.setNome(empresaDto.getNome());
-        empresa.setCnpj(empresaDto.getCnpj());
+        empresa = empresaOptional.get();
+        empresa.setNome(empresa.getNome());
+        empresa.setCnpj(empresa.getCnpj());
 
         empresa = empresaRepository.save(empresa);
 
-        return new EmpresaDto(empresa);
+        return empresa;
     }
 
     public boolean validarCNPJ(String cnpj) {
-        // Método de validação retona um boolean para verificação do CNPJ
 
+        // Metodo de validação retona um boolean para verificação do CNPJ
         cnpj = cnpj.replaceAll("[^0-9]", "");
 
         if (cnpj.length() != 14) {

@@ -45,8 +45,6 @@ public class ColaboradorController {
                 return ResponseEntity.badRequest().body("Erro: O ID da empresa é obrigatório!");
             }
 
-            //EmpresaDto empresa = empresaService.buscarPorId(colaborador.getEmpresa().getId_emp());
-
             Colaborador novoColaborador = colaboradorService.salvar(colaborador);
             return ResponseEntity.status(HttpStatus.CREATED).body(novoColaborador);
         } catch (Exception e) {

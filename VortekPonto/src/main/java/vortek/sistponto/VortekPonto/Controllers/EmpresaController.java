@@ -38,8 +38,8 @@ public class EmpresaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<EmpresaDto>> listar() {
-        List<EmpresaDto> emp = empresaService.listarEmpresas();
+    public ResponseEntity<List<Empresa>> listar() {
+        List<Empresa> emp = empresaService.listarEmpresas();
         if (emp.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -47,8 +47,8 @@ public class EmpresaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EmpresaDto> buscarPorId(@PathVariable Integer id) {
-        EmpresaDto emp = empresaService.buscarPorId(id);
+    public ResponseEntity<Empresa> buscarPorId(@PathVariable Integer id) {
+        Empresa emp = empresaService.buscarPorId(id);
         if (emp == null) {
             return ResponseEntity.notFound().build();
         }
@@ -66,9 +66,9 @@ public class EmpresaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EmpresaDto> atualizarEmpresa(@PathVariable Integer id, @RequestBody EmpresaDto empresaDto) {
+    public ResponseEntity<Empresa> atualizarEmpresa(@PathVariable Integer id, @RequestBody Empresa empresa) {
         try {
-            EmpresaDto updatedEmpresa = empresaService.atualizarEmpresa(id, empresaDto);
+            Empresa updatedEmpresa = empresaService.atualizarEmpresa(id, empresa);
             return ResponseEntity.ok(updatedEmpresa);
         } catch (ObjectNotFoundException e) {
             return ResponseEntity.status(404).body(null);

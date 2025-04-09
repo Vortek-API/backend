@@ -28,17 +28,14 @@ public class Empresa {
     private String nome;
     @Column(name = "cnpj", nullable = false, unique = true)
     private String cnpj;
-    @Column(name = "telefone", nullable = false, unique = true)
+    @Column(name = "telefone", nullable = false)
     private String telefone;
-    @Column(name = "logo", nullable = false, unique = true)
-    @JsonSerialize(using = BlobSerializer.class)
-    private Blob logo;
+    @Column(name = "logo")
+    private String logo;
 
     @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL)
-    @JsonSerialize(using = EmpresaSerializer.class)
     private List<Colaborador> colaboradores;
 
     @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL)
-    @JsonSerialize(using = EmpresaSerializer.class)
     private List<Usuario> usuarios;
 }

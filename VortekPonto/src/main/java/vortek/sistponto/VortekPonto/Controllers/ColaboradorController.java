@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import vortek.sistponto.VortekPonto.Dto.ColaboradorDto;
 import vortek.sistponto.VortekPonto.Models.Colaborador;
 import vortek.sistponto.VortekPonto.Services.ColaboradorService;
 import vortek.sistponto.VortekPonto.Services.EmpresaService;
@@ -33,20 +34,17 @@ public class ColaboradorController {
     private EmpresaService empresaService;
 
     @GetMapping()
-    public List<Colaborador> listarTodos() {
-        List<Colaborador> colaboradores = colaboradorService.listarTodos();
+    public List<ColaboradorDto> listarTodos() {
+        List<ColaboradorDto> colaboradores = colaboradorService.listarTodos();
         return (colaboradores != null) ? colaboradores : Collections.emptyList();
     }
 
     @PostMapping
-    public ResponseEntity<?> criar(@RequestBody Colaborador colaborador) {
+    public ResponseEntity<?> criar(@RequestBody ColaboradorDto colaborador) {
         try {
-            if (colaborador.getEmpresa() == null || colaborador.getEmpresa().getId() == null) {
-                return ResponseEntity.badRequest().body("Erro: O ID da empresa é obrigatório!");
-            }
+            colaborador = colaboradorService.salvar(colaborador);
+            return ResponseEntity.status(HttpStatus.CREATED).body(colaborador);
 
-            Colaborador novoColaborador = colaboradorService.salvar(colaborador);
-            return ResponseEntity.status(HttpStatus.CREATED).body(novoColaborador);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Collections.singletonMap("error", "Erro ao criar colaborador: " + e.getMessage()));
@@ -56,7 +54,7 @@ public class ColaboradorController {
     @GetMapping("/{id}")
     public ResponseEntity<?> buscarPorId(@PathVariable Integer id) {
         try {
-            Colaborador colaborador = colaboradorService.buscarPorId(id);
+            ColaboradorDto colaborador = colaboradorService.buscarPorId(id);
             if (colaborador == null) {
                 return ResponseEntity.notFound().build();
             }
@@ -74,14 +72,16 @@ public class ColaboradorController {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<?> atualizar(@PathVariable Integer id, @RequestBody Colaborador colaboradorAtualizado) {
-    try {
-        Colaborador colaborador = colaboradorService.atualizar(id, colaboradorAtualizado);
-        return ResponseEntity.ok(colaborador);
-    } catch (ObjectNotFoundException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(Collections.singletonMap("message", e.getMessage()));
+    public ResponseEntity<?> atualizar(@PathVariable Integer id, @RequestBody ColaboradorDto colaboradorAtualizado) {
+        try {
+            ColaboradorDto colaborador = colaboradorService.atualizar(id, colaboradorAtualizado);
+            return ResponseEntity.ok(colaborador);
+        } catch (ObjectNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Collections.singletonMap("message", e.getMessage()));
+        }
     }
-}
+
+
 
 }

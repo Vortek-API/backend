@@ -1,11 +1,8 @@
 package vortek.sistponto.VortekPonto.Models;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
 import lombok.*;
-import vortek.sistponto.VortekPonto.Configs.Json.BlobSerializer;
 
-import java.sql.Blob;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -29,6 +26,9 @@ public class Colaborador {
     @Column(name = "nome", nullable = false)
     private String nome;
 
+    @Column(name = "email", nullable = false)
+    private String email;
+
     @Column(name = "cargo", nullable = false)
     private String cargo;
 
@@ -38,21 +38,17 @@ public class Colaborador {
     @Column(name = "horario_saida")
     private LocalTime horarioSaida;
 
-    @Column(name = "status_ativo", nullable = false)
-    private boolean status_ativo;
+    @Column(name = "statusAtivo", nullable = false)
+    private boolean statusAtivo;
 
     @Column(name = "endereco", nullable = false)
     private String endereco;
-
-    @Column(name = "email", nullable = false)
-    private String email;
 
     @Column(name = "data_cadastro", nullable = false)
     private LocalDateTime dataCadastro;
 
     @Column(name = "foto", nullable = false)
-    @JsonSerialize(using = BlobSerializer.class)
-    private Blob foto;
+    private String foto;
 
     @ManyToOne
     @JoinColumn(name = "empresa_id", referencedColumnName = "id", nullable = false)

@@ -1,12 +1,14 @@
 package vortek.sistponto.VortekPonto.Services;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import vortek.sistponto.VortekPonto.Dto.ColaboradorDto;
 import vortek.sistponto.VortekPonto.Models.Colaborador;
+import vortek.sistponto.VortekPonto.Models.Empresa;
 import vortek.sistponto.VortekPonto.Repositories.ColaboradorRepository;
 import vortek.sistponto.VortekPonto.Services.Exceptions.ObjectNotFoundException;
 
@@ -16,18 +18,37 @@ public class ColaboradorService {
     @Autowired
     private ColaboradorRepository colaboradorRepository;
 
-    public List<Colaborador> listarTodos() {
-        return colaboradorRepository.findAll();
+    public List<ColaboradorDto> listarTodos() {
+        List<Colaborador> colaborador = colaboradorRepository.findAll();
+        return colaborador.stream().map(this::converterParaDto).collect(Collectors.toList());
     }
 
-    public Colaborador salvar(Colaborador funcionario) {
-        String resultadoValidacao = validarCPF(funcionario.getCpf());
+    public ColaboradorDto salvar(ColaboradorDto funcionario) {
+        String resultadoValidacao = validarCPF(funcionario.cpf());
 
         if (!resultadoValidacao.equals("O CPF é válido!")) {
             throw new IllegalArgumentException(resultadoValidacao);
         }
-        funcionario.setId(null);
-        return colaboradorRepository.save(funcionario);
+
+        Colaborador colaborador = new Colaborador();
+        colaborador.setCpf(funcionario.cpf());
+        colaborador.setNome(funcionario.nome());
+        colaborador.setCargo(funcionario.cargo());
+        colaborador.setHorarioEntrada(funcionario.horarioEntrada());
+        colaborador.setHorarioSaida(funcionario.horarioSaida());
+        colaborador.setStatusAtivo(funcionario.statusAtivo());
+        colaborador.setFoto(funcionario.foto());
+        if(funcionario.empresaId() != null){
+            Empresa empresa = new Empresa();
+            empresa.setId(funcionario.empresaId());
+            colaborador.setEmpresa(empresa);
+        }else{
+            throw new ObjectNotFoundException("O ID da empresa é obrigatório!");
+        }
+
+        colaborador = colaboradorRepository.save(colaborador);
+
+        return converterParaDto(colaborador);
     }
 
     public static String validarCPF(String cpf) {
@@ -65,9 +86,9 @@ public class ColaboradorService {
         return "O CPF é válido!";
     }
 
-    public Colaborador buscarPorId(Integer id) {
-        Optional<Colaborador> funcionario = colaboradorRepository.findById(id);
-        return funcionario.orElseThrow(() -> new ObjectNotFoundException("Funcionário com id " + id + " não encontrado!"));
+    public ColaboradorDto buscarPorId(Integer id) {
+        Colaborador funcionario = colaboradorRepository.findById(id).get();
+        return converterParaDto(funcionario);
     }
 
     public Boolean excluirFunc(Integer id) {
@@ -78,16 +99,47 @@ public class ColaboradorService {
         return false; // Caso o Funcionario não exista
     }
 
-    public Colaborador atualizar(Integer id, Colaborador colaboradorAtualizado) {
-        return colaboradorRepository.findById(id).map(colaborador -> {
-            colaborador.setCpf(colaboradorAtualizado.getCpf());
-            colaborador.setNome(colaboradorAtualizado.getNome());
-            colaborador.setCargo(colaboradorAtualizado.getCargo());
-            colaborador.setHorarioEntrada(colaboradorAtualizado.getHorarioEntrada());
-            colaborador.setHorarioSaida(colaboradorAtualizado.getHorarioSaida());
-            colaborador.setStatus_ativo(colaboradorAtualizado.isStatus_ativo());
-            colaborador.setEmpresa(colaboradorAtualizado.getEmpresa());
-            return colaboradorRepository.save(colaborador);
-        }).orElse(null);
+    public ColaboradorDto atualizar(Integer id, ColaboradorDto colaboradorAtualizado) {
+        Colaborador colaborador = colaboradorRepository.findById(id).orElse(null);
+
+        if(colaborador == null){
+            throw new ObjectNotFoundException("Colaborador não encontrado com o ID: " + id);
+        }
+
+        colaborador.setCpf(colaboradorAtualizado.cpf());
+        colaborador.setNome(colaboradorAtualizado.nome());
+        colaborador.setCargo(colaboradorAtualizado.cargo());
+        colaborador.setHorarioEntrada(colaboradorAtualizado.horarioEntrada());
+        colaborador.setHorarioSaida(colaboradorAtualizado.horarioSaida());
+        colaborador.setStatusAtivo(colaboradorAtualizado.statusAtivo());
+
+        if(colaboradorAtualizado.empresaId() != null){
+            Empresa empresa = new Empresa();
+            empresa.setId(colaboradorAtualizado.empresaId());
+            colaborador.setEmpresa(empresa);
+        }else{
+            throw new ObjectNotFoundException("Erro: O ID da empresa é obrigatório!");
+        }
+
+        colaborador = colaboradorRepository.save(colaborador);
+
+        return converterParaDto(colaborador);
+    }
+
+    private ColaboradorDto converterParaDto(Colaborador colaborador) {
+        return new ColaboradorDto(
+                colaborador.getId(),
+                colaborador.getCpf(),
+                colaborador.getNome(),
+                colaborador.getCargo(),
+                colaborador.getHorarioEntrada(),
+                colaborador.getHorarioSaida(),
+                colaborador.isStatusAtivo(),
+                colaborador.getEndereco(),
+                colaborador.getEmail(),
+                colaborador.getDataCadastro(),
+                "urlDaFoto", // Inserir lógica para obter a URL da foto
+                colaborador.getEmpresa().getId()
+        );
     }
 }

@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import vortek.sistponto.VortekPonto.Configs.Json.BlobSerializer;
 import vortek.sistponto.VortekPonto.Configs.Json.EmpresaSerializer;
 
 @Entity
@@ -30,6 +31,7 @@ public class Empresa {
     @Column(name = "telefone", nullable = false, unique = true)
     private String telefone;
     @Column(name = "logo", nullable = false, unique = true)
+    @JsonSerialize(using = BlobSerializer.class)
     private Blob logo;
 
     @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL)
@@ -39,39 +41,4 @@ public class Empresa {
     @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL)
     @JsonSerialize(using = EmpresaSerializer.class)
     private List<Usuario> usuarios;
-
-    /*public Integer getId() {
-        return id_emp;
-    }
-    public void setId(Integer id) {
-        this.id_emp = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getCnpj() {
-        return cnpj;
-    }
-    public void setCnpj(String cnpj) {
-        this.cnpj = cnpj;
-    }
-    
-    public String getTelefone() {
-        return telefone;
-    }
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
-    }
-
-    public Blob getLogo() {
-        return logo;
-    }
-    public void setLogo(Blob logo) {
-        this.logo = logo;
-    }*/
 }

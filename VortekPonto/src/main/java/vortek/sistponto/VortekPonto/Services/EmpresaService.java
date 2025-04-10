@@ -2,13 +2,13 @@ package vortek.sistponto.VortekPonto.Services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import vortek.sistponto.VortekPonto.Dto.EmpresaDto;
 import vortek.sistponto.VortekPonto.Models.Empresa;
 import vortek.sistponto.VortekPonto.Repositories.EmpresaRepository;
 import vortek.sistponto.VortekPonto.Services.Exceptions.ObjectNotFoundException;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -17,53 +17,60 @@ public class EmpresaService {
     @Autowired
     private EmpresaRepository empresaRepository;
 
-    public Empresa cadastrarEmpresa(Empresa empresa) {
-        if (empresaRepository.existsByCnpj(empresa.getCnpj())) {
+    public EmpresaDto cadastrarEmpresa(EmpresaDto empresa) {
+        if (empresaRepository.existsByCnpj(empresa.cnpj())) {
             throw new RuntimeException("CNPJ já cadastrado!");
         }
-        empresa.setId(null);
-        return empresaRepository.save(empresa);
+
+        Empresa emp = new Empresa();
+        emp.setNome(empresa.nome());
+        emp.setTelefone(empresa.telefone());
+        emp.setCnpj(empresa.cnpj());
+        emp.setLogo(empresa.logo());
+        emp = empresaRepository.save(emp);
+
+        return converterParaDto(emp);
     }
 
-    public List<Empresa> listarEmpresas() {
+    public List<EmpresaDto> listarEmpresas() {
         List<Empresa> empresas = empresaRepository.findAll();
-        return new ArrayList<>(empresas);
+        return empresas.stream().map(this::converterParaDto).collect(Collectors.toList());
 
     }
 
-    public Empresa buscarPorId(Integer id) {
-        Empresa empresa = empresaRepository.findById(id).get();
+    public EmpresaDto buscarPorId(Integer id) {
+        Empresa empresa = empresaRepository.findById(id).orElse(null);
         if (empresa == null) {
             throw new ObjectNotFoundException("Empresa: " + id + " não encontrada!");
         }
-        return empresa;
+        return converterParaDto(empresa);
     }
 
     public String deletarEmpresa(Integer id) {
-        Empresa emp = empresaRepository.findById(id).get();
-        if (emp != null) {
-            System.out.println(emp.getCnpj());
-            empresaRepository.delete(emp);
-            return "Empresa deletada com sucesso!";
-        } else {
+        Empresa emp = empresaRepository.findById(id).orElse(null);
+
+        if (emp == null) {
             throw new RuntimeException("Empresa não encontrada!");
         }
+
+        empresaRepository.delete(emp);
+        return "Empresa deletada com sucesso!";
     }
 
-    public Empresa atualizarEmpresa(Integer id, Empresa empresa) {
-        Optional<Empresa> empresaOptional = empresaRepository.findById(id);
+    public EmpresaDto atualizarEmpresa(Integer id, EmpresaDto empresa) {
+        Empresa emp = empresaRepository.findById(id).orElse(null);
 
-        if (!empresaOptional.isPresent()) {
+        if (emp == null) {
             throw new ObjectNotFoundException("Empresa não encontrada!");
         }
 
-        empresa = empresaOptional.get();
-        empresa.setNome(empresa.getNome());
-        empresa.setCnpj(empresa.getCnpj());
+        emp.setNome(empresa.nome());
+        emp.setTelefone(empresa.telefone());
+        emp.setCnpj(empresa.cnpj());
+        emp.setLogo(empresa.logo());
+        emp = empresaRepository.save(emp);
 
-        empresa = empresaRepository.save(empresa);
-
-        return empresa;
+        return converterParaDto(emp);
     }
 
     public boolean validarCNPJ(String cnpj) {
@@ -106,5 +113,15 @@ public class EmpresaService {
 
         return Character.getNumericValue(cnpj.charAt(12)) == digit1 &&
                 Character.getNumericValue(cnpj.charAt(13)) == digit2;
+    }
+
+    private EmpresaDto converterParaDto(Empresa empresa) {
+        return new EmpresaDto(
+                empresa.getId(),
+                empresa.getNome(),
+                empresa.getCnpj(),
+                empresa.getTelefone(),
+                empresa.getLogo()
+        );
     }
 }

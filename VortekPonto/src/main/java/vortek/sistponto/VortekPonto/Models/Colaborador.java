@@ -47,7 +47,7 @@ public class Colaborador {
     @Column(name = "data_cadastro", nullable = false)
     private LocalDateTime dataCadastro;
 
-    @Column(name = "foto", nullable = false)
+    @Column(name = "foto")
     private String foto;
 
     @ManyToOne

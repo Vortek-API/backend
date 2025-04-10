@@ -142,4 +142,22 @@ public class ColaboradorService {
                 colaborador.getEmpresa().getId()
         );
     }
+
+    public void atualizarFoto(Integer id, String imageUrl) {
+        Colaborador colaborador = colaboradorRepository.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException("Colaborador não encontrado com o ID: " + id));
+        colaborador.setFoto(imageUrl);
+        colaboradorRepository.save(colaborador);
+    }
+
+    public String buscarFotoUrl(Integer id) {
+        Colaborador colaborador = colaboradorRepository.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException("Colaborador não encontrado com o ID: " + id));
+        return colaborador.getFoto();
+    }
+
+    //Extrair nome da foto
+    public String extrairNomeArquivoDaUrl(String imageUrl) {
+        return imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+    }
 }

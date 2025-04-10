@@ -19,7 +19,10 @@ public class AzureBlobService {
     @Value("${azure.storage.connection-string}")
     private String connectionString;
 
-    public String upload(MultipartFile file, String containerName) throws IOException {
+    @Value("${azure.storage.container-name}")
+    private String containerName;
+
+    public String salvarFoto(MultipartFile file) throws IOException {
         String fileName = UUID.randomUUID() + "-" + file.getOriginalFilename();
 
         BlobContainerClient containerClient = new BlobServiceClientBuilder()
@@ -37,7 +40,7 @@ public class AzureBlobService {
         return blobClient.getBlobUrl();
     }
 
-    public byte[] download(String containerName, String fileName) {
+    public byte[] baixarFoto(String fileName) {
         try {
             BlobContainerClient containerClient = new BlobServiceClientBuilder()
                     .connectionString(connectionString)

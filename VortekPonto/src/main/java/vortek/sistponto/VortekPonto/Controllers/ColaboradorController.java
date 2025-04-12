@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import vortek.sistponto.VortekPonto.Dto.ColaboradorDto;
 import vortek.sistponto.VortekPonto.Services.AzureBlobService;
 import vortek.sistponto.VortekPonto.Services.ColaboradorService;
-import vortek.sistponto.VortekPonto.Services.Exceptions.ObjectNotFoundException;
+import vortek.sistponto.VortekPonto.Exceptions.ObjectNotFoundException;
 
 import java.io.IOException;
 import java.util.Collections;

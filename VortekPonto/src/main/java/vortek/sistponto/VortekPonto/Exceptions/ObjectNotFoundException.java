@@ -1,4 +1,4 @@
-package vortek.sistponto.VortekPonto.Services.Exceptions;
+package vortek.sistponto.VortekPonto.Exceptions;
 
 public class ObjectNotFoundException extends RuntimeException {
     public ObjectNotFoundException(String message) {

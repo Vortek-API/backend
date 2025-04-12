@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import vortek.sistponto.VortekPonto.Dto.EmpresaDto;
 import vortek.sistponto.VortekPonto.Models.Empresa;
 import vortek.sistponto.VortekPonto.Repositories.EmpresaRepository;
-import vortek.sistponto.VortekPonto.Services.Exceptions.ObjectNotFoundException;
+import vortek.sistponto.VortekPonto.Exceptions.ObjectNotFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;

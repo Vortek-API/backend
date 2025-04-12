@@ -10,7 +10,7 @@ import vortek.sistponto.VortekPonto.Dto.ColaboradorDto;
 import vortek.sistponto.VortekPonto.Models.Colaborador;
 import vortek.sistponto.VortekPonto.Models.Empresa;
 import vortek.sistponto.VortekPonto.Repositories.ColaboradorRepository;
-import vortek.sistponto.VortekPonto.Services.Exceptions.ObjectNotFoundException;
+import vortek.sistponto.VortekPonto.Exceptions.ObjectNotFoundException;
 
 @Service
 public class ColaboradorService {

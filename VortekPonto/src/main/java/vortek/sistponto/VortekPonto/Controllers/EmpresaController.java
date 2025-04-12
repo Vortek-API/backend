@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vortek.sistponto.VortekPonto.Dto.EmpresaDto;
 import vortek.sistponto.VortekPonto.Services.EmpresaService;
-import vortek.sistponto.VortekPonto.Services.Exceptions.ObjectNotFoundException;
+import vortek.sistponto.VortekPonto.Exceptions.ObjectNotFoundException;
 
 import java.util.Collections;
 import java.util.List;

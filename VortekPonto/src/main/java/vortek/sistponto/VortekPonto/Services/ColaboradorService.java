@@ -30,15 +30,25 @@ public class ColaboradorService {
     }
 
     public ColaboradorDto salvar(ColaboradorDto funcionario) {
-        Colaborador colaborador = colaboradorRepository.findByCpf(funcionario.cpf());
+        Colaborador colaboradorExistente = colaboradorRepository.findByCpf(funcionario.cpf());
 
-        if(!colaborador.getCpf().isEmpty()){
+        if(colaboradorExistente != null){
             throw new CpfInvalidoException("CPF já cadastrado: " + funcionario.cpf());
         }
 
         if (!validadorCPF.isValidCpf(funcionario.cpf())) {
             throw new CpfInvalidoException("CPF inválido: " + funcionario.cpf());
         }
+
+        Colaborador colaborador = criaColaborador(funcionario);
+
+        colaborador = colaboradorRepository.save(colaborador);
+
+        return converterParaDto(colaborador);
+    }
+
+    private static Colaborador criaColaborador(ColaboradorDto funcionario) {
+        Colaborador colaborador = new Colaborador();
 
         colaborador.setCpf(funcionario.cpf());
         colaborador.setNome(funcionario.nome());
@@ -55,12 +65,8 @@ public class ColaboradorService {
         }else{
             throw new ObjectNotFoundException("O ID da empresa é obrigatório!");
         }
-
-        colaborador = colaboradorRepository.save(colaborador);
-
-        return converterParaDto(colaborador);
+        return colaborador;
     }
-
 
 
     public ColaboradorDto buscarPorId(Integer id) {

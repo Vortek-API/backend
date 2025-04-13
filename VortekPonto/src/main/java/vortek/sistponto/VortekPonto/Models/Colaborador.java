@@ -1,10 +1,19 @@
 package vortek.sistponto.VortekPonto.Models;
 
-import jakarta.persistence.*;
-import lombok.*;
-
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "colaborador")
@@ -17,19 +26,15 @@ public class Colaborador {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Integer id;
 
-    @Column(name = "cpf", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String cpf;
 
-    @Column(name = "nome", nullable = false)
+    @Column(nullable = false)
     private String nome;
 
-    @Column(name = "email", nullable = false)
-    private String email;
-
-    @Column(name = "cargo", nullable = false)
+    @Column(nullable = false)
     private String cargo;
 
     @Column(name = "horario_entrada", nullable = false)
@@ -38,20 +43,11 @@ public class Colaborador {
     @Column(name = "horario_saida")
     private LocalTime horarioSaida;
 
-    @Column(name = "statusAtivo", nullable = false)
+    @Column(name = "status_ativo", nullable = false)
     private boolean statusAtivo;
 
-    @Column(name = "endereco", nullable = false)
-    private String endereco;
-
-    @Column(name = "data_cadastro", nullable = false)
+    @Column(name = "data_cadastro")
     private LocalDateTime dataCadastro;
 
-    @Column(name = "foto")
     private String foto;
-
-    @ManyToOne
-    @JoinColumn(name = "empresa_id", referencedColumnName = "id", nullable = false)
-    private Empresa empresa;
-
 }

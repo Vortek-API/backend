@@ -8,12 +8,10 @@ import org.springframework.stereotype.Service;
 
 import vortek.sistponto.VortekPonto.Dto.ColaboradorDto;
 import vortek.sistponto.VortekPonto.Exceptions.CpfInvalidoException;
-import vortek.sistponto.VortekPonto.Models.Colaborador;
-import vortek.sistponto.VortekPonto.Models.Empresa;
-import vortek.sistponto.VortekPonto.Repositories.ColaboradorRepository;
 import vortek.sistponto.VortekPonto.Exceptions.ObjectNotFoundException;
+import vortek.sistponto.VortekPonto.Models.Colaborador;
+import vortek.sistponto.VortekPonto.Repositories.ColaboradorRepository;
 import vortek.sistponto.VortekPonto.Utils.ValidadorCPF;
-
 
 @Service
 public class ColaboradorService {
@@ -25,105 +23,52 @@ public class ColaboradorService {
     private ValidadorCPF validadorCPF;
 
     public List<ColaboradorDto> listarTodos() {
-        List<Colaborador> colaborador = colaboradorRepository.findAll();
-        return colaborador.stream().map(this::converterParaDto).collect(Collectors.toList());
+        return colaboradorRepository.findAll()
+                .stream()
+                .map(this::converterParaDto)
+                .collect(Collectors.toList());
     }
 
-    public ColaboradorDto salvar(ColaboradorDto funcionario) {
-        Colaborador colaboradorExistente = colaboradorRepository.findByCpf(funcionario.cpf());
-
-        if(colaboradorExistente != null){
-            throw new CpfInvalidoException("CPF já cadastrado: " + funcionario.cpf());
+    public ColaboradorDto salvar(ColaboradorDto dto) {
+        if (colaboradorRepository.findByCpf(dto.cpf()) != null) {
+            throw new CpfInvalidoException("CPF já cadastrado: " + dto.cpf());
         }
 
-        if (!validadorCPF.isValidCpf(funcionario.cpf())) {
-            throw new CpfInvalidoException("CPF inválido: " + funcionario.cpf());
+        if (!validadorCPF.isValidCpf(dto.cpf())) {
+            throw new CpfInvalidoException("CPF inválido: " + dto.cpf());
         }
 
-        Colaborador colaborador = criaColaborador(funcionario);
-
-        colaborador = colaboradorRepository.save(colaborador);
-
-        return converterParaDto(colaborador);
+        Colaborador novo = criaColaborador(dto);
+        return converterParaDto(colaboradorRepository.save(novo));
     }
-
-    private static Colaborador criaColaborador(ColaboradorDto funcionario) {
-        Colaborador colaborador = new Colaborador();
-
-        colaborador.setCpf(funcionario.cpf());
-        colaborador.setNome(funcionario.nome());
-        colaborador.setCargo(funcionario.cargo());
-        colaborador.setHorarioEntrada(funcionario.horarioEntrada());
-        colaborador.setHorarioSaida(funcionario.horarioSaida());
-        colaborador.setStatusAtivo(funcionario.statusAtivo());
-        colaborador.setFoto(funcionario.foto());
-
-        if(funcionario.empresaId() != null){
-            Empresa empresa = new Empresa();
-            empresa.setId(funcionario.empresaId());
-            colaborador.setEmpresa(empresa);
-        }else{
-            throw new ObjectNotFoundException("O ID da empresa é obrigatório!");
-        }
-        return colaborador;
-    }
-
 
     public ColaboradorDto buscarPorId(Integer id) {
-        Colaborador funcionario = colaboradorRepository.findById(id).get();
-        return converterParaDto(funcionario);
+        Colaborador c = colaboradorRepository.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException("Colaborador não encontrado com o ID: " + id));
+        return converterParaDto(c);
     }
 
     public Boolean excluirFunc(Integer id) {
-        if (colaboradorRepository.existsById(id)) { // Verifica se o Funcionario existe
-            colaboradorRepository.deleteById(id); // Deleta o Funcionario pelo ID
+        if (colaboradorRepository.existsById(id)) {
+            colaboradorRepository.deleteById(id);
             return true;
         }
-        return false; // Caso o Funcionario não exista
+        return false;
     }
 
-    public ColaboradorDto atualizar(Integer id, ColaboradorDto colaboradorAtualizado) {
-        Colaborador colaborador = colaboradorRepository.findById(id).orElse(null);
+    public ColaboradorDto atualizar(Integer id, ColaboradorDto dto) {
+        Colaborador colaborador = colaboradorRepository.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException("Colaborador não encontrado com o ID: " + id));
 
-        if(colaborador == null){
-            throw new ObjectNotFoundException("Colaborador não encontrado com o ID: " + id);
-        }
+        colaborador.setCpf(dto.cpf());
+        colaborador.setNome(dto.nome());
+        colaborador.setCargo(dto.cargo());
+        colaborador.setHorarioEntrada(dto.horarioEntrada());
+        colaborador.setHorarioSaida(dto.horarioSaida());
+        colaborador.setStatusAtivo(dto.statusAtivo());
+        colaborador.setFoto(dto.foto());
 
-        colaborador.setCpf(colaboradorAtualizado.cpf());
-        colaborador.setNome(colaboradorAtualizado.nome());
-        colaborador.setCargo(colaboradorAtualizado.cargo());
-        colaborador.setHorarioEntrada(colaboradorAtualizado.horarioEntrada());
-        colaborador.setHorarioSaida(colaboradorAtualizado.horarioSaida());
-        colaborador.setStatusAtivo(colaboradorAtualizado.statusAtivo());
-
-        if(colaboradorAtualizado.empresaId() != null){
-            Empresa empresa = new Empresa();
-            empresa.setId(colaboradorAtualizado.empresaId());
-            colaborador.setEmpresa(empresa);
-        }else{
-            throw new ObjectNotFoundException("Erro: O ID da empresa é obrigatório!");
-        }
-
-        colaborador = colaboradorRepository.save(colaborador);
-
-        return converterParaDto(colaborador);
-    }
-
-    private ColaboradorDto converterParaDto(Colaborador colaborador) {
-        return new ColaboradorDto(
-                colaborador.getId(),
-                colaborador.getCpf(),
-                colaborador.getNome(),
-                colaborador.getCargo(),
-                colaborador.getHorarioEntrada(),
-                colaborador.getHorarioSaida(),
-                colaborador.isStatusAtivo(),
-                colaborador.getEndereco(),
-                colaborador.getEmail(),
-                colaborador.getDataCadastro(),
-                "urlDaFoto", // Inserir lógica para obter a URL da foto
-                colaborador.getEmpresa().getId()
-        );
+        return converterParaDto(colaboradorRepository.save(colaborador));
     }
 
     public void atualizarFoto(Integer id, String imageUrl) {
@@ -139,8 +84,33 @@ public class ColaboradorService {
         return colaborador.getFoto();
     }
 
-    //Extrair nome da foto
     public String extrairNomeArquivoDaUrl(String imageUrl) {
         return imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+    }
+
+    private Colaborador criaColaborador(ColaboradorDto dto) {
+        Colaborador c = new Colaborador();
+        c.setCpf(dto.cpf());
+        c.setNome(dto.nome());
+        c.setCargo(dto.cargo());
+        c.setHorarioEntrada(dto.horarioEntrada());
+        c.setHorarioSaida(dto.horarioSaida());
+        c.setStatusAtivo(dto.statusAtivo());
+        c.setFoto(dto.foto());
+        return c;
+    }
+
+    private ColaboradorDto converterParaDto(Colaborador c) {
+        return new ColaboradorDto(
+                c.getId(),
+                c.getCpf(),
+                c.getNome(),
+                c.getCargo(),
+                c.getHorarioEntrada(),
+                c.getHorarioSaida(),
+                c.isStatusAtivo(),
+                c.getDataCadastro(),
+                c.getFoto()
+        );
     }
 }

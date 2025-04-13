@@ -1,20 +1,30 @@
 package vortek.sistponto.VortekPonto.Controllers;
 
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
 import vortek.sistponto.VortekPonto.Dto.ColaboradorDto;
+import vortek.sistponto.VortekPonto.Exceptions.ObjectNotFoundException;
 import vortek.sistponto.VortekPonto.Services.AzureBlobService;
 import vortek.sistponto.VortekPonto.Services.ColaboradorService;
-import vortek.sistponto.VortekPonto.Exceptions.ObjectNotFoundException;
-
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
@@ -26,6 +36,8 @@ public class ColaboradorController {
 
     @Autowired
     private AzureBlobService azureBlobService;
+
+    private final String containerName = "colab-foto";
 
     @GetMapping()
     public List<ColaboradorDto> listarTodos() {
@@ -79,7 +91,7 @@ public class ColaboradorController {
     @PostMapping("/{id}/foto")
     public ResponseEntity<String> salvarFoto(@PathVariable Integer id, @RequestParam("foto") MultipartFile foto) throws IOException {
         try {
-            String imageUrl = azureBlobService.salvarFoto(foto);
+            String imageUrl = azureBlobService.salvarFoto(foto, containerName);
             colaboradorService.atualizarFoto(id, imageUrl); // Atualiza a URL da foto no banco de dados
             return ResponseEntity.ok(imageUrl);
         } catch (Exception e) {
@@ -97,7 +109,7 @@ public class ColaboradorController {
             // Extraia o nome do arquivo da URL
             String fileName = colaboradorService.extrairNomeArquivoDaUrl(imageUrl);
 
-            byte[] imageBytes = azureBlobService.baixarFoto(fileName);
+            byte[] imageBytes = azureBlobService.baixarFoto(fileName, containerName);
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.IMAGE_JPEG); // Fotos do tipo JPEG

@@ -1,16 +1,17 @@
 package vortek.sistponto.VortekPonto.Services;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import vortek.sistponto.VortekPonto.Dto.EmpresaDto;
-import vortek.sistponto.VortekPonto.Exceptions.CNPJInvalidoException;
-import vortek.sistponto.VortekPonto.Models.Empresa;
-import vortek.sistponto.VortekPonto.Repositories.EmpresaRepository;
-import vortek.sistponto.VortekPonto.Exceptions.ObjectNotFoundException;
-import vortek.sistponto.VortekPonto.Utils.ValidadorCNPJ;
-
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import vortek.sistponto.VortekPonto.Dto.EmpresaDto;
+import vortek.sistponto.VortekPonto.Exceptions.CNPJInvalidoException;
+import vortek.sistponto.VortekPonto.Exceptions.ObjectNotFoundException;
+import vortek.sistponto.VortekPonto.Models.Empresa;
+import vortek.sistponto.VortekPonto.Repositories.EmpresaRepository;
+import vortek.sistponto.VortekPonto.Utils.ValidadorCNPJ;
 
 
 @Service
@@ -34,9 +35,7 @@ public class EmpresaService {
         }
 
         emp.setNome(empresa.nome());
-        emp.setTelefone(empresa.telefone());
         emp.setCnpj(empresa.cnpj());
-        emp.setLogo(empresa.logo());
         emp = empresaRepository.save(emp);
 
         return converterParaDto(emp);
@@ -75,9 +74,7 @@ public class EmpresaService {
         }
 
         emp.setNome(empresa.nome());
-        emp.setTelefone(empresa.telefone());
         emp.setCnpj(empresa.cnpj());
-        emp.setLogo(empresa.logo());
         emp = empresaRepository.save(emp);
 
         return converterParaDto(emp);
@@ -87,9 +84,7 @@ public class EmpresaService {
         return new EmpresaDto(
                 empresa.getId(),
                 empresa.getNome(),
-                empresa.getCnpj(),
-                empresa.getTelefone(),
-                empresa.getLogo()
+                empresa.getCnpj()
         );
     }
 }

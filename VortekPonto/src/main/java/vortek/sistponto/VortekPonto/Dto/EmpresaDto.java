@@ -1,4 +1,5 @@
 package vortek.sistponto.VortekPonto.Dto;
 
-public record EmpresaDto(Integer id, String nome, String cnpj, String telefone, String logo) {
+public record EmpresaDto(Integer id, String nome, String cnpj) {
 }
+

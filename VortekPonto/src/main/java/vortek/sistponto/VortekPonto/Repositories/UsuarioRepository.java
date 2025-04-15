@@ -1,7 +1,8 @@
-package vortek.sistponto.VortekPonto.Repositories;
+package vortek.sistponto.vortekponto.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import vortek.sistponto.VortekPonto.Models.Usuario;
+
+import vortek.sistponto.vortekponto.models.Usuario;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
     Usuario findByLogin(String login);

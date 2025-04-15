@@ -1,11 +1,12 @@
-package vortek.sistponto.VortekPonto.Security;
+package vortek.sistponto.vortekponto.security;
 
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Base64;
+
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 
 public class SenhaHashing {
     private static final int ITERATIONS = 10000;

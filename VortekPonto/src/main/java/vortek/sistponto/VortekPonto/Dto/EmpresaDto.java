@@ -1,5 +1,9 @@
-package vortek.sistponto.VortekPonto.Dto;
+package vortek.sistponto.vortekponto.dto;
 
-public record EmpresaDto(Integer id, String nome, String cnpj) {
+import java.time.LocalDateTime;
+
+public record EmpresaDto(Integer id, String nome, String cnpj, LocalDateTime dataCadastro) {
+    
 }
+
 

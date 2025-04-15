@@ -1,4 +1,4 @@
-package vortek.sistponto.VortekPonto.Exceptions;
+package vortek.sistponto.vortekponto.exceptions;
 
 public class CNPJInvalidoException extends RuntimeException {
     public CNPJInvalidoException(String message) {

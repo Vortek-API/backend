@@ -1,4 +1,4 @@
-package vortek.sistponto.VortekPonto.Exceptions;
+package vortek.sistponto.vortekponto.exceptions;
 
 public class CpfInvalidoException extends RuntimeException {
     public CpfInvalidoException(String message) {

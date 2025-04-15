@@ -1,7 +1,8 @@
-package vortek.sistponto.VortekPonto.Utils;
+package vortek.sistponto.vortekponto.utils;
 
 import org.springframework.stereotype.Component;
-import vortek.sistponto.VortekPonto.Exceptions.CpfInvalidoException;
+
+import vortek.sistponto.vortekponto.exceptions.CpfInvalidoException;
 
 @Component
 public class ValidadorCPF {

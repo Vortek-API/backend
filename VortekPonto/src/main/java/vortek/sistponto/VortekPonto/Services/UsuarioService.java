@@ -1,13 +1,13 @@
-package vortek.sistponto.VortekPonto.Services;
+package vortek.sistponto.vortekponto.services;
 
 import jakarta.annotation.PostConstruct;
+import vortek.sistponto.vortekponto.models.TipoUsuario;
+import vortek.sistponto.vortekponto.models.Usuario;
+import vortek.sistponto.vortekponto.repositories.UsuarioRepository;
+import vortek.sistponto.vortekponto.security.SenhaHashing;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import vortek.sistponto.VortekPonto.Models.TipoUsuario;
-
-import vortek.sistponto.VortekPonto.Models.Usuario;
-import vortek.sistponto.VortekPonto.Repositories.UsuarioRepository;
-import vortek.sistponto.VortekPonto.Security.SenhaHashing;
 
 @Service
 public class UsuarioService {

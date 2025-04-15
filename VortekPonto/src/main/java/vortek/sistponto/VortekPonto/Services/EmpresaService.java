@@ -1,4 +1,4 @@
-package vortek.sistponto.VortekPonto.Services;
+package vortek.sistponto.vortekponto.services;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -6,12 +6,12 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import vortek.sistponto.VortekPonto.Dto.EmpresaDto;
-import vortek.sistponto.VortekPonto.Exceptions.CNPJInvalidoException;
-import vortek.sistponto.VortekPonto.Exceptions.ObjectNotFoundException;
-import vortek.sistponto.VortekPonto.Models.Empresa;
-import vortek.sistponto.VortekPonto.Repositories.EmpresaRepository;
-import vortek.sistponto.VortekPonto.Utils.ValidadorCNPJ;
+import vortek.sistponto.vortekponto.dto.EmpresaDto;
+import vortek.sistponto.vortekponto.exceptions.CNPJInvalidoException;
+import vortek.sistponto.vortekponto.exceptions.ObjectNotFoundException;
+import vortek.sistponto.vortekponto.models.Empresa;
+import vortek.sistponto.vortekponto.repositories.EmpresaRepository;
+import vortek.sistponto.vortekponto.utils.ValidadorCNPJ;
 
 
 @Service
@@ -84,7 +84,8 @@ public class EmpresaService {
         return new EmpresaDto(
                 empresa.getId(),
                 empresa.getNome(),
-                empresa.getCnpj()
+                empresa.getCnpj(),
+                empresa.getDataCadastro()
         );
     }
 }

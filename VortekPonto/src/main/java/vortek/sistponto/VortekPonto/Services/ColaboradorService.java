@@ -1,4 +1,4 @@
-package vortek.sistponto.VortekPonto.Services;
+package vortek.sistponto.vortekponto.services;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -6,12 +6,12 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import vortek.sistponto.VortekPonto.Dto.ColaboradorDto;
-import vortek.sistponto.VortekPonto.Exceptions.CpfInvalidoException;
-import vortek.sistponto.VortekPonto.Exceptions.ObjectNotFoundException;
-import vortek.sistponto.VortekPonto.Models.Colaborador;
-import vortek.sistponto.VortekPonto.Repositories.ColaboradorRepository;
-import vortek.sistponto.VortekPonto.Utils.ValidadorCPF;
+import vortek.sistponto.vortekponto.dto.ColaboradorDto;
+import vortek.sistponto.vortekponto.exceptions.CpfInvalidoException;
+import vortek.sistponto.vortekponto.exceptions.ObjectNotFoundException;
+import vortek.sistponto.vortekponto.models.Colaborador;
+import vortek.sistponto.vortekponto.repositories.ColaboradorRepository;
+import vortek.sistponto.vortekponto.utils.ValidadorCPF;
 
 @Service
 public class ColaboradorService {

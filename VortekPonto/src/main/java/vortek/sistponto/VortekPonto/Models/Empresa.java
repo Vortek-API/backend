@@ -1,4 +1,6 @@
-package vortek.sistponto.VortekPonto.Models;
+package vortek.sistponto.vortekponto.models;
+
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,7 +30,10 @@ public class Empresa {
 
     @Column(name = "cnpj", nullable = false, unique = true)
     private String cnpj;
-    
+
+    @Column(name = "data_cadastro", updatable = false, insertable = false)
+    private LocalDateTime dataCadastro;
+
     // private List<ColaboradorEmpresa> colaboradorEmpresas;
     // private List<UsuarioEmpresa> usuarioEmpresas;
 }

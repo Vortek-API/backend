@@ -1,4 +1,4 @@
-package vortek.sistponto.VortekPonto.Dto;
+package vortek.sistponto.vortekponto.dto;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;

@@ -1,4 +1,4 @@
-package vortek.sistponto.VortekPonto.Controllers;
+package vortek.sistponto.vortekponto.controllers;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -21,10 +21,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import vortek.sistponto.VortekPonto.Dto.ColaboradorDto;
-import vortek.sistponto.VortekPonto.Exceptions.ObjectNotFoundException;
-import vortek.sistponto.VortekPonto.Services.AzureBlobService;
-import vortek.sistponto.VortekPonto.Services.ColaboradorService;
+import vortek.sistponto.vortekponto.dto.ColaboradorDto;
+import vortek.sistponto.vortekponto.exceptions.ObjectNotFoundException;
+import vortek.sistponto.vortekponto.services.AzureBlobService;
+import vortek.sistponto.vortekponto.services.ColaboradorService;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController

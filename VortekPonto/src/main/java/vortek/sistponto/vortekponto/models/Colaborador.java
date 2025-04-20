@@ -2,12 +2,17 @@ package vortek.sistponto.vortekponto.models;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Set; 
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -50,4 +55,19 @@ public class Colaborador {
     private LocalDateTime dataCadastro;
 
     private String foto;
+
+    @ManyToMany
+    @JoinTable(
+        name = "colaborador_empresa",
+        joinColumns = @JoinColumn(name = "colaborador_id"), 
+        inverseJoinColumns = @JoinColumn(name = "empresa_id") 
+    )
+    private Set<Empresa> empresas; 
+
+    @PrePersist
+    public void prePersist() {
+        if (this.dataCadastro == null) {
+            this.dataCadastro = LocalDateTime.now();
+        }
+    }
 }

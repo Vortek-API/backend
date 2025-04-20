@@ -22,44 +22,57 @@ public class ColaboradorService {
     @Autowired
     private ValidadorCPF validadorCPF;
 
+    // Lista todos os colaboradores
     public List<ColaboradorDto> listarTodos() {
         return colaboradorRepository.findAll()
                 .stream()
-                .map(this::converterParaDto)
+                .map(this::converterParaDto) 
                 .collect(Collectors.toList());
     }
 
+    
     public ColaboradorDto salvar(ColaboradorDto dto) {
+        
         if (colaboradorRepository.findByCpf(dto.cpf()) != null) {
             throw new CpfInvalidoException("CPF já cadastrado: " + dto.cpf());
         }
 
+        
         if (!validadorCPF.isValidCpf(dto.cpf())) {
             throw new CpfInvalidoException("CPF inválido: " + dto.cpf());
         }
 
+       
         Colaborador novo = criaColaborador(dto);
         return converterParaDto(colaboradorRepository.save(novo));
     }
 
-    public ColaboradorDto buscarPorId(Integer id) {
-        Colaborador c = colaboradorRepository.findById(id)
+    
+    public ColaboradorDto buscarEntidadePorId(Long id) {
+        Colaborador c = colaboradorRepository.findById(id.intValue()) 
                 .orElseThrow(() -> new ObjectNotFoundException("Colaborador não encontrado com o ID: " + id));
         return converterParaDto(c);
     }
 
-    public Boolean excluirFunc(Integer id) {
-        if (colaboradorRepository.existsById(id)) {
-            colaboradorRepository.deleteById(id);
-            return true;
+
+    public Boolean excluirFunc(Long id) {
+        if (!colaboradorRepository.existsById(id.intValue())) { 
+            return false;  
         }
-        return false;
+        colaboradorRepository.deleteById(id.intValue());
+        return true;
     }
 
-    public ColaboradorDto atualizar(Integer id, ColaboradorDto dto) {
-        Colaborador colaborador = colaboradorRepository.findById(id)
+    public ColaboradorDto atualizar(Long id, ColaboradorDto dto) {
+        Colaborador colaborador = colaboradorRepository.findById(id.intValue()) 
                 .orElseThrow(() -> new ObjectNotFoundException("Colaborador não encontrado com o ID: " + id));
 
+    
+        if (!colaborador.getCpf().equals(dto.cpf()) && colaboradorRepository.findByCpf(dto.cpf()) != null) {
+            throw new CpfInvalidoException("CPF já cadastrado: " + dto.cpf());
+        }
+
+    
         colaborador.setCpf(dto.cpf());
         colaborador.setNome(dto.nome());
         colaborador.setCargo(dto.cargo());
@@ -71,46 +84,32 @@ public class ColaboradorService {
         return converterParaDto(colaboradorRepository.save(colaborador));
     }
 
-    public void atualizarFoto(Integer id, String imageUrl) {
-        Colaborador colaborador = colaboradorRepository.findById(id)
-                .orElseThrow(() -> new ObjectNotFoundException("Colaborador não encontrado com o ID: " + id));
-        colaborador.setFoto(imageUrl);
-        colaboradorRepository.save(colaborador);
-    }
-
-    public String buscarFotoUrl(Integer id) {
-        Colaborador colaborador = colaboradorRepository.findById(id)
-                .orElseThrow(() -> new ObjectNotFoundException("Colaborador não encontrado com o ID: " + id));
-        return colaborador.getFoto();
-    }
-
-    public String extrairNomeArquivoDaUrl(String imageUrl) {
-        return imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
-    }
-
-    private Colaborador criaColaborador(ColaboradorDto dto) {
-        Colaborador c = new Colaborador();
-        c.setCpf(dto.cpf());
-        c.setNome(dto.nome());
-        c.setCargo(dto.cargo());
-        c.setHorarioEntrada(dto.horarioEntrada());
-        c.setHorarioSaida(dto.horarioSaida());
-        c.setStatusAtivo(dto.statusAtivo());
-        c.setFoto(dto.foto());
-        return c;
-    }
-
-    private ColaboradorDto converterParaDto(Colaborador c) {
+    public ColaboradorDto converterParaDto(Colaborador colaborador) {
         return new ColaboradorDto(
-                c.getId(),
-                c.getCpf(),
-                c.getNome(),
-                c.getCargo(),
-                c.getHorarioEntrada(),
-                c.getHorarioSaida(),
-                c.isStatusAtivo(),
-                c.getDataCadastro(),
-                c.getFoto()
+                colaborador.getId(),
+                colaborador.getNome(),
+                colaborador.getCpf(),
+                colaborador.getCargo(),
+                colaborador.getHorarioEntrada(),
+                colaborador.getHorarioSaida(),
+                colaborador.getStatusAtivo(),
+                colaborador.getFoto()
         );
+    }
+
+    public Colaborador criaColaborador(ColaboradorDto dto) {
+        return new Colaborador(
+                dto.cpf(),
+                dto.nome(),
+                dto.cargo(),
+                dto.horarioEntrada(),
+                dto.horarioSaida(),
+                dto.statusAtivo(),
+                dto.foto()
+        );
+    }
+
+    public List<Colaborador> buscarTodos() {
+        return colaboradorRepository.findAll();
     }
 }

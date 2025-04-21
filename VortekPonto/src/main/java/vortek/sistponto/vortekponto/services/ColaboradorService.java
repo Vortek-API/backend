@@ -55,9 +55,9 @@ public class ColaboradorService {
             throw new CpfInvalidoException("CPF já cadastrado: " + dto.cpf());
         }
 
-        // if (!validadorCPF.isValidCpf(dto.cpf())) {
-        // throw new CpfInvalidoException("CPF inválido: " + dto.cpf());
-        // }
+        if (!validadorCPF.isValidCpf(dto.cpf())) {
+        throw new CpfInvalidoException("CPF inválido: " + dto.cpf());
+        }
 
         Colaborador novo = criaColaborador(dto);
 

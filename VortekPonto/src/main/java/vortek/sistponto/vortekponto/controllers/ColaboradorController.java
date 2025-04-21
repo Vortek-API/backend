@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import vortek.sistponto.vortekponto.dto.ColaboradorComEmpresasDto;
 import vortek.sistponto.vortekponto.dto.ColaboradorDto;
+import vortek.sistponto.vortekponto.dto.ColaboradorRequest;
 import vortek.sistponto.vortekponto.exceptions.ObjectNotFoundException;
 import vortek.sistponto.vortekponto.services.AzureBlobService;
 import vortek.sistponto.vortekponto.services.ColaboradorService;
@@ -47,11 +48,10 @@ public class ColaboradorController {
     }
 
     @PostMapping
-    public ResponseEntity<?> criar(@RequestBody ColaboradorDto colaborador, @RequestBody Integer[] empresasId) {
+    public ResponseEntity<?> criar(@RequestBody ColaboradorRequest request) {
         try {
-            colaborador = colaboradorService.salvar(colaborador, empresasId);
+            ColaboradorDto colaborador = colaboradorService.salvar(request.colaborador(), request.empresasId());
             return ResponseEntity.status(HttpStatus.CREATED).body(colaborador);
-
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Collections.singletonMap("error", "Erro ao criar colaborador: " + e.getMessage()));
@@ -90,7 +90,8 @@ public class ColaboradorController {
     }
 
     @PostMapping("/{id}/foto")
-    public ResponseEntity<String> salvarFoto(@PathVariable Integer id, @RequestParam("foto") MultipartFile foto) throws IOException {
+    public ResponseEntity<String> salvarFoto(@PathVariable Integer id, @RequestParam("foto") MultipartFile foto)
+            throws IOException {
         try {
             String imageUrl = azureBlobService.salvarFoto(foto, containerName);
             colaboradorService.atualizarFoto(id, imageUrl); // Atualiza a URL da foto no banco de dados
@@ -121,7 +122,5 @@ public class ColaboradorController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
-
-
 
 }

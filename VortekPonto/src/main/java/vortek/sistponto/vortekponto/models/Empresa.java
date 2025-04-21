@@ -1,12 +1,16 @@
 package vortek.sistponto.vortekponto.models;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,9 +35,16 @@ public class Empresa {
     @Column(name = "cnpj", nullable = false, unique = true)
     private String cnpj;
 
-    @Column(name = "data_cadastro", updatable = false, insertable = false)
+    @Column(name = "data_cadastro", updatable = false)
     private LocalDateTime dataCadastro;
 
-    // private List<ColaboradorEmpresa> colaboradorEmpresas;
-    // private List<UsuarioEmpresa> usuarioEmpresas;
+    
+    @ManyToMany
+    @JoinTable(
+        name = "colaborador_empresa", 
+        joinColumns = @JoinColumn(name = "empresa_id"), 
+        inverseJoinColumns = @JoinColumn(name = "colaborador_id")
+    )
+    private List<Colaborador> colaboradores;
+
 }

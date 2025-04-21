@@ -6,7 +6,9 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import vortek.sistponto.vortekponto.dto.ColaboradorComEmpresasDto;
 import vortek.sistponto.vortekponto.dto.ColaboradorDto;
+import vortek.sistponto.vortekponto.dto.EmpresaDto;
 import vortek.sistponto.vortekponto.exceptions.CpfInvalidoException;
 import vortek.sistponto.vortekponto.exceptions.ObjectNotFoundException;
 import vortek.sistponto.vortekponto.models.Colaborador;
@@ -20,16 +22,34 @@ public class ColaboradorService {
     private ColaboradorRepository colaboradorRepository;
 
     @Autowired
+    private ColaboradorEmpresaService colabEmpService;
+
+    @Autowired
+    private EmpresaService empresaService;
+
+    @Autowired
     private ValidadorCPF validadorCPF;
 
-    public List<ColaboradorDto> listarTodos() {
+    public List<ColaboradorComEmpresasDto> listarTodos() {
         return colaboradorRepository.findAll()
                 .stream()
-                .map(this::converterParaDto)
-                .collect(Collectors.toList());
+                .map(colab -> {
+                    List<EmpresaDto> empresas = colabEmpService.buscarEmpresasDoColaborador(colab.getId());
+                    return new ColaboradorComEmpresasDto(
+                            colab.getId(),
+                            colab.getCpf(),
+                            colab.getNome(),
+                            colab.getCargo(),
+                            colab.getHorarioEntrada(),
+                            colab.getHorarioSaida(),
+                            colab.isStatusAtivo(),
+                            colab.getDataCadastro(),
+                            colab.getFoto(),
+                            empresas);
+                }).collect(Collectors.toList());
     }
 
-    public ColaboradorDto salvar(ColaboradorDto dto) {
+    public ColaboradorDto salvar(ColaboradorDto dto, Integer[] empresasId) {
         if (colaboradorRepository.findByCpf(dto.cpf()) != null) {
             throw new CpfInvalidoException("CPF já cadastrado: " + dto.cpf());
         }
@@ -38,7 +58,13 @@ public class ColaboradorService {
             throw new CpfInvalidoException("CPF inválido: " + dto.cpf());
         }
 
+        for (Integer empresa : empresasId) {
+            EmpresaDto emp = empresaService.buscarPorId(empresa);
+            colabEmpService.associarColaboradorAEmpresa(emp, dto);
+        }
+
         Colaborador novo = criaColaborador(dto);
+
         return converterParaDto(colaboradorRepository.save(novo));
     }
 
@@ -110,7 +136,6 @@ public class ColaboradorService {
                 c.getHorarioSaida(),
                 c.isStatusAtivo(),
                 c.getDataCadastro(),
-                c.getFoto()
-        );
+                c.getFoto());
     }
 }

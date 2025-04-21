@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import vortek.sistponto.vortekponto.dto.ColaboradorDto;
 import vortek.sistponto.vortekponto.dto.EmpresaDto;
 import vortek.sistponto.vortekponto.exceptions.ObjectNotFoundException;
+import vortek.sistponto.vortekponto.services.ColaboradorEmpresaService;
 import vortek.sistponto.vortekponto.services.EmpresaService;
 
 @CrossOrigin(origins = "http://localhost:4200")
@@ -27,6 +29,9 @@ public class EmpresaController {
 
     @Autowired
     EmpresaService empresaService;
+
+    @Autowired
+    ColaboradorEmpresaService colabEmpService;
 
     @PostMapping
     public ResponseEntity<?> cadastrarEmpresa(@RequestBody EmpresaDto empresa) {
@@ -55,6 +60,14 @@ public class EmpresaController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok().body(emp);
+    }
+    @GetMapping("/colabs/{id}")
+    public ResponseEntity<List<ColaboradorDto>> buscarColabs(@PathVariable Integer id) {
+        List<ColaboradorDto> colabEmp = colabEmpService.buscarColaboradoresPorEmpresaId(id);
+        if (colabEmp == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(colabEmp);
     }
 
     @DeleteMapping("/{id}")

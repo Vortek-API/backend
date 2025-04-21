@@ -1,40 +1,99 @@
 package vortek.sistponto.vortekponto.services;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import vortek.sistponto.vortekponto.dto.ColaboradorDto;
+import vortek.sistponto.vortekponto.dto.ColaboradorEmpresaDto;
+import vortek.sistponto.vortekponto.dto.EmpresaDto;
+import vortek.sistponto.vortekponto.exceptions.ObjectNotFoundException;
 import vortek.sistponto.vortekponto.models.Colaborador;
 import vortek.sistponto.vortekponto.models.ColaboradorEmpresa;
 import vortek.sistponto.vortekponto.models.Empresa;
 import vortek.sistponto.vortekponto.repositories.ColaboradorEmpresaRepository;
-
+import vortek.sistponto.vortekponto.repositories.ColaboradorRepository;
+import vortek.sistponto.vortekponto.repositories.EmpresaRepository;
 
 @Service
 public class ColaboradorEmpresaService {
-    private final ColaboradorEmpresaRepository repository;
 
-    public ColaboradorEmpresaService(ColaboradorEmpresaRepository repository) {
-        this.repository = repository;
+    @Autowired
+    private ColaboradorEmpresaRepository repository;
+
+    @Autowired
+    private ColaboradorRepository colaboradorRepository;
+
+    @Autowired
+    private EmpresaRepository empresaRepository;
+
+    public List<ColaboradorEmpresaDto> listarTodos() {
+        return repository.findAll()
+                .stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
     }
 
-    @Transactional
-    public ColaboradorEmpresa associarColaboradorAEmpresa(Empresa empresa, Colaborador colaborador) {
-        ColaboradorEmpresa associacao = new ColaboradorEmpresa(colaborador, empresa);
-        return repository.save(associacao);
+    public ColaboradorEmpresaDto buscarPorId(Integer id) {
+        ColaboradorEmpresa ce = repository.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException("Associação não encontrada: " + id));
+        return toDto(ce);
     }
 
-    public List<Empresa> buscarEmpresasPorColaborador(Integer colaboradorId) {
-        return repository.findEmpresasByColaborador(colaboradorId);
+    public ColaboradorEmpresaDto associarColaboradorAEmpresa(EmpresaDto empresaDto, ColaboradorDto colaboradorDto) {
+        Colaborador colaborador = colaboradorRepository.findById(colaboradorDto.id())
+                .orElseThrow(() -> new ObjectNotFoundException("Colaborador não encontrado: " + colaboradorDto.id()));
+
+        Empresa empresa = empresaRepository.findById(empresaDto.id())
+                .orElseThrow(() -> new ObjectNotFoundException("Empresa não encontrada: " + empresaDto.id()));
+
+        ColaboradorEmpresa ce = new ColaboradorEmpresa();
+        ce.setColaborador(colaborador);
+        ce.setEmpresa(empresa);
+
+        return toDto(repository.save(ce));
     }
 
-    public List<Colaborador> buscarColaboradoresPorEmpresa(Integer empresaId) {
-        return repository.findColaboradoresByEmpresa(empresaId);
+    public Boolean excluirPorId(Integer id) {
+        if (repository.existsById(id)) {
+            repository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 
-    @Transactional
-    public void removerAssociacao(Integer id) {
-        repository.deleteById(id);
+    public List<EmpresaDto> buscarEmpresasDoColaborador(Integer colaboradorId) {
+        return repository.findEmpresasByColaboradorId(colaboradorId)
+                .stream()
+                .map(emp -> new EmpresaDto(emp.getId(), emp.getNome(), emp.getCnpj(), emp.getDataCadastro()))
+                .collect(Collectors.toList());
+    }
+
+    @Autowired
+    private ColaboradorEmpresaRepository colaboradorEmpresaRepository;
+
+    public List<ColaboradorDto> buscarColaboradoresPorEmpresaId(Integer empresaId) {
+        return colaboradorEmpresaRepository.findColaboradoresByEmpresaId(empresaId)
+                .stream()
+                .map(colab -> new ColaboradorDto(
+                        colab.getId(),
+                        colab.getCpf(),
+                        colab.getNome(),
+                        colab.getCargo(),
+                        colab.getHorarioEntrada(),
+                        colab.getHorarioSaida(),
+                        colab.isStatusAtivo(),
+                        colab.getDataCadastro(),
+                        colab.getFoto()))
+                .collect(Collectors.toList());
+    }
+
+    private ColaboradorEmpresaDto toDto(ColaboradorEmpresa ce) {
+        return new ColaboradorEmpresaDto(
+                ce.getId(),
+                ce.getColaborador().getId(),
+                ce.getEmpresa().getId());
     }
 }

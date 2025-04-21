@@ -5,17 +5,17 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import vortek.sistponto.vortekponto.models.Colaborador;
 import vortek.sistponto.vortekponto.models.ColaboradorEmpresa;
 import vortek.sistponto.vortekponto.models.Empresa;
 
-public interface ColaboradorEmpresaRepository extends JpaRepository<ColaboradorEmpresa, Integer>{
-    // Buscar empresas de um colaborador
-    @Query("SELECT ec.empresa FROM ColaboradorEmpresa ec WHERE ec.colaborador.id = :colaboradorId")
-    List<Empresa> findEmpresasByColaborador(@Param("colaboradorId") Integer colaboradorId);
+@Repository
+public interface ColaboradorEmpresaRepository extends JpaRepository<ColaboradorEmpresa, Integer> {
+    @Query("SELECT ce.empresa FROM ColaboradorEmpresa ce WHERE ce.colaborador.id = :colaboradorId")
+    List<Empresa> findEmpresasByColaboradorId(@Param("colaboradorId") Integer colaboradorId);
 
-    // Busca colaboradores de uma empresa
-    @Query("SELECT ec.colaborador FROM ColaboradorEmpresa ec WHERE ec.empresa.id = :empresaId")
-    List<Colaborador> findColaboradoresByEmpresa(@Param("empresaId") Integer empresaId);
+    @Query("SELECT ce.colaborador FROM ColaboradorEmpresa ce WHERE ce.empresa.id = :empresaId")
+    List<Colaborador> findColaboradoresByEmpresaId(@Param("empresaId") Integer empresaId);
 }

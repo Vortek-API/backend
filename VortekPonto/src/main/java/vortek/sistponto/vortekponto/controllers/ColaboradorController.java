@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import vortek.sistponto.vortekponto.dto.ColaboradorComEmpresasDto;
 import vortek.sistponto.vortekponto.dto.ColaboradorDto;
 import vortek.sistponto.vortekponto.exceptions.ObjectNotFoundException;
 import vortek.sistponto.vortekponto.services.AzureBlobService;
@@ -40,15 +41,15 @@ public class ColaboradorController {
     private final String containerName = "colab-foto";
 
     @GetMapping()
-    public List<ColaboradorDto> listarTodos() {
-        List<ColaboradorDto> colaboradores = colaboradorService.listarTodos();
+    public List<ColaboradorComEmpresasDto> listarTodos() {
+        List<ColaboradorComEmpresasDto> colaboradores = colaboradorService.listarTodos();
         return (colaboradores != null) ? colaboradores : Collections.emptyList();
     }
 
     @PostMapping
-    public ResponseEntity<?> criar(@RequestBody ColaboradorDto colaborador) {
+    public ResponseEntity<?> criar(@RequestBody ColaboradorDto colaborador, @RequestBody Integer[] empresasId) {
         try {
-            colaborador = colaboradorService.salvar(colaborador);
+            colaborador = colaboradorService.salvar(colaborador, empresasId);
             return ResponseEntity.status(HttpStatus.CREATED).body(colaborador);
 
         } catch (Exception e) {

@@ -3,7 +3,7 @@ package vortek.sistponto.vortekponto.dto;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-public record ColaboradorDto(
+public record ColaboradorDto (
         Integer id,
         String cpf,
         String nome,
@@ -12,6 +12,5 @@ public record ColaboradorDto(
         LocalTime horarioSaida,
         boolean statusAtivo,
         LocalDateTime dataCadastro,
-        String foto,
-        Integer empresaId 
+        String foto
 ) {}

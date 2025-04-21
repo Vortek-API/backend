@@ -1,5 +1,6 @@
 package vortek.sistponto.vortekponto.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,6 +30,9 @@ public class ColaboradorEmpresaService {
     @Autowired
     private EmpresaRepository empresaRepository;
 
+    @Autowired
+    private EmpresaService empresaService;
+
     public List<ColaboradorEmpresaDto> listarTodos() {
         return repository.findAll()
                 .stream()
@@ -54,6 +58,22 @@ public class ColaboradorEmpresaService {
         ce.setEmpresa(empresa);
 
         return toDto(repository.save(ce));
+    }
+
+    public List<ColaboradorEmpresaDto> associarColaboradorAEmpresas(ColaboradorDto colaboradorDto,
+            Integer[] empresasId) {
+
+        Colaborador colaborador = colaboradorRepository.findById(colaboradorDto.id())
+                .orElseThrow(() -> new ObjectNotFoundException("Colaborador não encontrado: " + colaboradorDto.id()));
+
+        List<ColaboradorEmpresaDto> associacoesDto = new ArrayList<>();
+
+        for (Integer empresaId : empresasId) {
+            EmpresaDto empresaDto = empresaService.buscarPorId(empresaId);
+            associacoesDto.add(associarColaboradorAEmpresa(empresaDto, colaboradorDto));
+        }
+
+        return associacoesDto;
     }
 
     public Boolean excluirPorId(Integer id) {
@@ -88,6 +108,19 @@ public class ColaboradorEmpresaService {
                         colab.getDataCadastro(),
                         colab.getFoto()))
                 .collect(Collectors.toList());
+    }
+
+    public List<ColaboradorEmpresa> buscarAssociacoesPorColaborador(Integer colaboradorId) {
+        return colaboradorEmpresaRepository.findAll()
+                .stream()
+                .filter(ce -> ce.getColaborador().getId().equals(colaboradorId))
+                .collect(Collectors.toList());
+    }
+
+    public void excluirAssociacoes(List<ColaboradorEmpresa> associacoes) {
+        if (associacoes != null && !associacoes.isEmpty()) {
+            colaboradorEmpresaRepository.deleteAll(associacoes);
+        }
     }
 
     private ColaboradorEmpresaDto toDto(ColaboradorEmpresa ce) {

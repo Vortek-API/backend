@@ -12,6 +12,7 @@ import vortek.sistponto.vortekponto.dto.EmpresaDto;
 import vortek.sistponto.vortekponto.exceptions.CpfInvalidoException;
 import vortek.sistponto.vortekponto.exceptions.ObjectNotFoundException;
 import vortek.sistponto.vortekponto.models.Colaborador;
+import vortek.sistponto.vortekponto.models.ColaboradorEmpresa;
 import vortek.sistponto.vortekponto.repositories.ColaboradorRepository;
 import vortek.sistponto.vortekponto.utils.ValidadorCPF;
 
@@ -54,35 +55,49 @@ public class ColaboradorService {
             throw new CpfInvalidoException("CPF já cadastrado: " + dto.cpf());
         }
 
-        if (!validadorCPF.isValidCpf(dto.cpf())) {
-            throw new CpfInvalidoException("CPF inválido: " + dto.cpf());
-        }
-
-        for (Integer empresa : empresasId) {
-            EmpresaDto emp = empresaService.buscarPorId(empresa);
-            colabEmpService.associarColaboradorAEmpresa(emp, dto);
-        }
+        // if (!validadorCPF.isValidCpf(dto.cpf())) {
+        // throw new CpfInvalidoException("CPF inválido: " + dto.cpf());
+        // }
 
         Colaborador novo = criaColaborador(dto);
 
-        return converterParaDto(colaboradorRepository.save(novo));
+        ColaboradorDto save = converterParaDto(colaboradorRepository.save(novo));
+
+        colabEmpService.associarColaboradorAEmpresas(save, empresasId);
+
+        return save;
     }
 
-    public ColaboradorDto buscarPorId(Integer id) {
-        Colaborador c = colaboradorRepository.findById(id)
+    public ColaboradorComEmpresasDto buscarPorId(Integer id) {
+        Colaborador colaborador = colaboradorRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Colaborador não encontrado com o ID: " + id));
-        return converterParaDto(c);
+
+        List<EmpresaDto> empresasDto = colabEmpService.buscarEmpresasDoColaborador(id);
+
+        return new ColaboradorComEmpresasDto(
+                colaborador.getId(),
+                colaborador.getCpf(),
+                colaborador.getNome(),
+                colaborador.getCargo(),
+                colaborador.getHorarioEntrada(),
+                colaborador.getHorarioSaida(),
+                colaborador.isStatusAtivo(),
+                colaborador.getDataCadastro(),
+                colaborador.getFoto(),
+                empresasDto);
     }
 
     public Boolean excluirFunc(Integer id) {
         if (colaboradorRepository.existsById(id)) {
+            List<ColaboradorEmpresa> associacoes = colabEmpService.buscarAssociacoesPorColaborador(id);
+            colabEmpService.excluirAssociacoes(associacoes);
             colaboradorRepository.deleteById(id);
             return true;
         }
         return false;
     }
 
-    public ColaboradorDto atualizar(Integer id, ColaboradorDto dto) {
+    public ColaboradorDto atualizar(Integer id, ColaboradorDto dto, Integer[] empresasId) {
         Colaborador colaborador = colaboradorRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Colaborador não encontrado com o ID: " + id));
 
@@ -94,7 +109,14 @@ public class ColaboradorService {
         colaborador.setStatusAtivo(dto.statusAtivo());
         colaborador.setFoto(dto.foto());
 
-        return converterParaDto(colaboradorRepository.save(colaborador));
+        ColaboradorDto save = converterParaDto(colaboradorRepository.save(colaborador));
+
+        List<ColaboradorEmpresa> associacoesAntigas = colabEmpService.buscarAssociacoesPorColaborador(id);
+        colabEmpService.excluirAssociacoes(associacoesAntigas);
+
+        colabEmpService.associarColaboradorAEmpresas(save, empresasId);
+
+        return save;
     }
 
     public void atualizarFoto(Integer id, String imageUrl) {

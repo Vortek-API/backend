@@ -61,7 +61,7 @@ public class ColaboradorController {
     @GetMapping("/{id}")
     public ResponseEntity<?> buscarPorId(@PathVariable Integer id) {
         try {
-            ColaboradorDto colaborador = colaboradorService.buscarPorId(id);
+            ColaboradorComEmpresasDto colaborador = colaboradorService.buscarPorId(id);
             if (colaborador == null) {
                 return ResponseEntity.notFound().build();
             }
@@ -79,9 +79,9 @@ public class ColaboradorController {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<?> atualizar(@PathVariable Integer id, @RequestBody ColaboradorDto colaboradorAtualizado) {
+    public ResponseEntity<?> atualizar(@PathVariable Integer id, @RequestBody ColaboradorRequest colaboradorAtualizado) {
         try {
-            ColaboradorDto colaborador = colaboradorService.atualizar(id, colaboradorAtualizado);
+            ColaboradorDto colaborador = colaboradorService.atualizar(id, colaboradorAtualizado.colaborador(), colaboradorAtualizado.empresasId());
             return ResponseEntity.ok(colaborador);
         } catch (ObjectNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)

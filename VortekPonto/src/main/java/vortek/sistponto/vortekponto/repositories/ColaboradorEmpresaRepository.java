@@ -1,6 +1,7 @@
 package vortek.sistponto.vortekponto.repositories;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,4 +19,8 @@ public interface ColaboradorEmpresaRepository extends JpaRepository<ColaboradorE
 
     @Query("SELECT ce.colaborador FROM ColaboradorEmpresa ce WHERE ce.empresa.id = :empresaId")
     List<Colaborador> findColaboradoresByEmpresaId(@Param("empresaId") Integer empresaId);
+
+    @Query("SELECT ce FROM ColaboradorEmpresa ce WHERE ce.colaborador.id = :colaboradorId AND ce.empresa.id = :empresaId")
+    Optional<ColaboradorEmpresa> findByColaboradorIdAndEmpresaId(@Param("colaboradorId") Integer colaboradorId, @Param("empresaId") Integer empresaId);
+
 }

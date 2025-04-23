@@ -1,12 +1,14 @@
 package vortek.sistponto.vortekponto.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vortek.sistponto.vortekponto.dto.RegistroPontoDto;
 import vortek.sistponto.vortekponto.services.RegistroPontoService;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,14 +25,21 @@ public class RegistroPontoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.salvar(dto));
     }
 
+    @GetMapping
+    public ResponseEntity<List<RegistroPontoDto>> buscarRegistros(
+            @RequestParam(required = false) Integer colaboradorId,
+            @RequestParam(required = false) List<Integer> empresasId,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataInicio,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataFim) {
+
+        List<RegistroPontoDto> registros = service.buscarRegistros(colaboradorId, empresasId, dataInicio,
+                dataFim);
+        return ResponseEntity.ok(registros);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<RegistroPontoDto> buscar(@PathVariable Integer id) {
         return ResponseEntity.ok(service.buscarPorId(id));
-    }
-
-    @GetMapping
-    public ResponseEntity<List<RegistroPontoDto>> listar() {
-        return ResponseEntity.ok(service.listarTodos());
     }
 
     @DeleteMapping("/{id}")
@@ -38,6 +47,7 @@ public class RegistroPontoController {
         service.deletar(id);
         return ResponseEntity.noContent().build();
     }
+
     @GetMapping("/colaborador/{colaboradorId}/empresa/{empresaId}")
     public ResponseEntity<?> buscarRegistrosPorColaboradorEEmpresa(
             @PathVariable Integer colaboradorId,
@@ -50,5 +60,4 @@ public class RegistroPontoController {
                     .body(Collections.singletonMap("error", e.getMessage()));
         }
     }
-
 }

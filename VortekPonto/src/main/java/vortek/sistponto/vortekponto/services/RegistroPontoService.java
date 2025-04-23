@@ -9,7 +9,9 @@ import vortek.sistponto.vortekponto.models.RegistroPonto;
 import vortek.sistponto.vortekponto.repositories.ColaboradorEmpresaRepository;
 import vortek.sistponto.vortekponto.repositories.RegistroPontoRepository;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RegistroPontoService {
@@ -54,9 +56,9 @@ public class RegistroPontoService {
                 rp.getData(),
                 rp.getHoraEntrada(),
                 rp.getHoraSaida(),
-                rp.getTempoTotal()
-        );
+                rp.getTempoTotal());
     }
+
     public List<RegistroPontoDto> buscarPorColaboradorEEmpresa(Integer colaboradorId, Integer empresaId) {
         ColaboradorEmpresa colaboradorEmpresa = colaboradorEmpresaRepository
                 .findByColaboradorIdAndEmpresaId(colaboradorId, empresaId)
@@ -68,5 +70,32 @@ public class RegistroPontoService {
         return registros.stream().map(this::toDto).toList();
     }
 
-}
+    public List<RegistroPontoDto> buscarRegistros(
+            Integer colaboradorId,
+            List<Integer> empresasId,
+            LocalDate dataInicio,
+            LocalDate dataFim) {
 
+        List<ColaboradorEmpresa> relacoes;
+
+        if (colaboradorId != null && empresasId != null && !empresasId.isEmpty()) {
+            relacoes = colaboradorEmpresaRepository.findByColaboradorIdAndEmpresaIdIn(colaboradorId, empresasId);
+        } else if (colaboradorId != null) {
+            relacoes = colaboradorEmpresaRepository.findByColaboradorId(colaboradorId);
+        } else if (empresasId != null && !empresasId.isEmpty()) {
+            relacoes = colaboradorEmpresaRepository.findByEmpresaIdIn(empresasId);
+        } else {
+            relacoes = colaboradorEmpresaRepository.findAll();
+        }
+
+        List<Integer> colabEmpIds = relacoes.stream()
+                .map(ColaboradorEmpresa::getId)
+                .toList();
+
+        List<RegistroPonto> registros = repository.findByColaboradorEmpresasAndData(
+                colabEmpIds, dataInicio, dataFim);
+
+        return registros.stream().map(this::toDto).toList();
+    }
+
+}

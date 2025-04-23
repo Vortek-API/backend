@@ -14,13 +14,25 @@ import vortek.sistponto.vortekponto.models.Empresa;
 
 @Repository
 public interface ColaboradorEmpresaRepository extends JpaRepository<ColaboradorEmpresa, Integer> {
-    @Query("SELECT ce.empresa FROM ColaboradorEmpresa ce WHERE ce.colaborador.id = :colaboradorId")
-    List<Empresa> findEmpresasByColaboradorId(@Param("colaboradorId") Integer colaboradorId);
+        @Query("SELECT ce.empresa FROM ColaboradorEmpresa ce WHERE ce.colaborador.id = :colaboradorId")
+        List<Empresa> findEmpresasByColaboradorId(@Param("colaboradorId") Integer colaboradorId);
 
-    @Query("SELECT ce.colaborador FROM ColaboradorEmpresa ce WHERE ce.empresa.id = :empresaId")
-    List<Colaborador> findColaboradoresByEmpresaId(@Param("empresaId") Integer empresaId);
+        @Query("SELECT ce.colaborador FROM ColaboradorEmpresa ce WHERE ce.empresa.id = :empresaId")
+        List<Colaborador> findColaboradoresByEmpresaId(@Param("empresaId") Integer empresaId);
 
-    @Query("SELECT ce FROM ColaboradorEmpresa ce WHERE ce.colaborador.id = :colaboradorId AND ce.empresa.id = :empresaId")
-    Optional<ColaboradorEmpresa> findByColaboradorIdAndEmpresaId(@Param("colaboradorId") Integer colaboradorId, @Param("empresaId") Integer empresaId);
+        @Query("SELECT ce FROM ColaboradorEmpresa ce WHERE ce.colaborador.id = :colaboradorId AND ce.empresa.id = :empresaId")
+        Optional<ColaboradorEmpresa> findByColaboradorIdAndEmpresaId(@Param("colaboradorId") Integer colaboradorId,
+                        @Param("empresaId") Integer empresaId);
+
+        @Query("SELECT ce.id FROM ColaboradorEmpresa ce WHERE ce.colaborador.id = :colaboradorId"
+                        + " AND (:empresasId IS NULL OR ce.empresa.id IN :empresasId)")
+        List<Integer> findIdsByColaboradorAndEmpresas(@Param("colaboradorId") Integer colaboradorId,
+                        @Param("empresasId") List<Integer> empresasId);
+
+        List<ColaboradorEmpresa> findByColaboradorId(Integer colaboradorId);
+
+        List<ColaboradorEmpresa> findByEmpresaIdIn(List<Integer> empresasId);
+
+        List<ColaboradorEmpresa> findByColaboradorIdAndEmpresaIdIn(Integer colaboradorId, List<Integer> empresasId);
 
 }

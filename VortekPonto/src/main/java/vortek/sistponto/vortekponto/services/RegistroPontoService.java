@@ -10,7 +10,7 @@ import vortek.sistponto.vortekponto.repositories.ColaboradorEmpresaRepository;
 import vortek.sistponto.vortekponto.repositories.RegistroPontoRepository;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -97,5 +97,50 @@ public class RegistroPontoService {
 
         return registros.stream().map(this::toDto).toList();
     }
-
+    
+    public List<Map<String, Object>> calcularHorasPorEmpresa(LocalDate dataInicio, LocalDate dataFim) {
+        // Buscar todos os registros de ponto no período
+        List<RegistroPonto> registros = repository.findByData(dataInicio, dataFim);
+        
+        // Agrupar por empresa e calcular horas totais
+        Map<Integer, Long> horasPorEmpresaMap = new HashMap<>();
+        Map<Integer, String> empresaNomeMap = new HashMap<>();
+        
+        for (RegistroPonto registro : registros) {
+            Integer empresaId = registro.getColaboradorEmpresa().getEmpresa().getId();
+            String empresaNome = registro.getColaboradorEmpresa().getEmpresa().getNome();
+            empresaNomeMap.put(empresaId, empresaNome);
+            
+            // Calcular horas em segundos e adicionar ao total
+            if (registro.getTempoTotal() != null) {
+                long segundos = registro.getTempoTotal().toSecondOfDay();
+                horasPorEmpresaMap.put(empresaId, 
+                    horasPorEmpresaMap.getOrDefault(empresaId, 0L) + segundos);
+            }
+        }
+        
+        // Converter para lista de mapas para resposta
+        List<Map<String, Object>> resultado = new ArrayList<>();
+        for (Map.Entry<Integer, Long> entry : horasPorEmpresaMap.entrySet()) {
+            Integer empresaId = entry.getKey();
+            Long segundosTotais = entry.getValue();
+            
+            // Converter segundos para horas:minutos:segundos
+            long horas = segundosTotais / 3600;
+            long minutos = (segundosTotais % 3600) / 60;
+            long segundos = segundosTotais % 60;
+            
+            Map<String, Object> empresaHoras = new HashMap<>();
+            empresaHoras.put("empresaId", empresaId);
+            empresaHoras.put("empresaNome", empresaNomeMap.get(empresaId));
+            empresaHoras.put("horasTotais", horas);
+            empresaHoras.put("minutosTotais", minutos);
+            empresaHoras.put("segundosTotais", segundos);
+            empresaHoras.put("segundosAbsolutos", segundosTotais);
+            
+            resultado.add(empresaHoras);
+        }
+        
+        return resultado;
+    }
 }

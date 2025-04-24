@@ -19,5 +19,10 @@ public interface RegistroPontoRepository extends JpaRepository<RegistroPonto, In
     List<RegistroPonto> findByColaboradorEmpresasAndData(@Param("colabEmpIds") List<Integer> colabEmpIds,
             @Param("dataInicio") LocalDate dataInicio,
             @Param("dataFim") LocalDate dataFim);
-
+            
+    @Query("SELECT rp FROM RegistroPonto rp " +
+            "WHERE (:dataInicio IS NULL OR rp.data >= :dataInicio) " +
+            "AND (:dataFim IS NULL OR rp.data <= :dataFim)")
+    List<RegistroPonto> findByData(@Param("dataInicio") LocalDate dataInicio,
+            @Param("dataFim") LocalDate dataFim);
 }

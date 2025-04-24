@@ -11,6 +11,7 @@ import vortek.sistponto.vortekponto.services.RegistroPontoService;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/ponto")
@@ -59,5 +60,14 @@ public class RegistroPontoController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Collections.singletonMap("error", e.getMessage()));
         }
+    }
+    
+    @GetMapping("/horas-por-empresa")
+    public ResponseEntity<List<Map<String, Object>>> horasPorEmpresa(
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataInicio,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataFim) {
+        
+        List<Map<String, Object>> horasPorEmpresa = service.calcularHorasPorEmpresa(dataInicio, dataFim);
+        return ResponseEntity.ok(horasPorEmpresa);
     }
 }

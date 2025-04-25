@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vortek.sistponto.vortekponto.dto.RegistroPontoDto;
+import vortek.sistponto.vortekponto.dto.RegistroPontoResponseDto;
 import vortek.sistponto.vortekponto.services.RegistroPontoService;
 
 import java.time.LocalDate;
@@ -38,9 +39,28 @@ public class RegistroPontoController {
         return ResponseEntity.ok(registros);
     }
 
+    @GetMapping("/detalhado")
+    public ResponseEntity<List<RegistroPontoResponseDto>> buscarRegistrosDetalhados(
+            @RequestParam(required = false) Integer colaboradorId,
+            @RequestParam(required = false) List<Integer> empresasId,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataInicio,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataFim) {
+
+        List<RegistroPontoResponseDto> registros = service.buscarRegistrosDetalhados(colaboradorId, empresasId,
+                dataInicio, dataFim);
+        return ResponseEntity.ok(registros);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<RegistroPontoDto> buscar(@PathVariable Integer id) {
         return ResponseEntity.ok(service.buscarPorId(id));
+    }
+
+    @GetMapping("/{id}/detalhado")
+    public ResponseEntity<RegistroPontoResponseDto> buscarDetalhado(@PathVariable Integer id) {
+        RegistroPontoDto dto = service.buscarPorId(id);
+        RegistroPontoResponseDto response = service.toDtoDetalhado(List.of(dto)).get(0);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
@@ -61,12 +81,12 @@ public class RegistroPontoController {
                     .body(Collections.singletonMap("error", e.getMessage()));
         }
     }
-    
+
     @GetMapping("/horas-por-empresa")
     public ResponseEntity<List<Map<String, Object>>> horasPorEmpresa(
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataInicio,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataFim) {
-        
+
         List<Map<String, Object>> horasPorEmpresa = service.calcularHorasPorEmpresa(dataInicio, dataFim);
         return ResponseEntity.ok(horasPorEmpresa);
     }

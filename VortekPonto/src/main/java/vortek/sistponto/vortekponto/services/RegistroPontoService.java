@@ -3,6 +3,7 @@ package vortek.sistponto.vortekponto.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vortek.sistponto.vortekponto.dto.RegistroPontoDto;
+import vortek.sistponto.vortekponto.dto.RegistroPontoResponseDto;
 import vortek.sistponto.vortekponto.exceptions.ObjectNotFoundException;
 import vortek.sistponto.vortekponto.models.ColaboradorEmpresa;
 import vortek.sistponto.vortekponto.models.RegistroPonto;
@@ -97,6 +98,14 @@ public class RegistroPontoService {
 
         return registros.stream().map(this::toDto).toList();
     }
+    public List<RegistroPontoResponseDto> buscarRegistrosDetalhados(
+            Integer colaboradorId,
+            List<Integer> empresasId,
+            LocalDate dataInicio,
+            LocalDate dataFim) {
+
+        return toDtoDetalhado(this.buscarRegistros(colaboradorId, empresasId, dataInicio, dataFim));
+    }
     
     public List<Map<String, Object>> calcularHorasPorEmpresa(LocalDate dataInicio, LocalDate dataFim) {
         // Buscar todos os registros de ponto no período
@@ -143,4 +152,30 @@ public class RegistroPontoService {
         
         return resultado;
     }
+
+    public List<RegistroPontoResponseDto> toDtoDetalhado(List<RegistroPontoDto> list) {
+        List<Integer> colaboradorEmpresaIds = list.stream()
+                .map(RegistroPontoDto::colaboradorEmpresaId)
+                .distinct()
+                .toList();
+    
+        Map<Integer, ColaboradorEmpresa> colaboradorEmpresaMap = colaboradorEmpresaRepository
+                .findAllById(colaboradorEmpresaIds)
+                .stream()
+                .collect(Collectors.toMap(ColaboradorEmpresa::getId, ce -> ce));
+                
+        return list.stream().map(dto -> {
+            ColaboradorEmpresa ce = colaboradorEmpresaMap.get(dto.colaboradorEmpresaId());
+            return new RegistroPontoResponseDto(
+                    dto.id(),
+                    ce.getColaborador().getId(),
+                    ce.getEmpresa().getId(),
+                    dto.data(),
+                    dto.horaEntrada(),
+                    dto.horaSaida(),
+                    dto.tempoTotal()
+            );
+        }).toList();
+    }
+    
 }

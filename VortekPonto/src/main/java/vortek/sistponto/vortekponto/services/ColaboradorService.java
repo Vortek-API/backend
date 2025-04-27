@@ -111,7 +111,7 @@ public class ColaboradorService {
         return false;
     }
 
-    public ColaboradorDto atualizar(Integer id, ColaboradorDto dto, Integer[] empresasId) {
+    public ColaboradorDto atualizar(Integer id, ColaboradorDto dto, Integer[] empresasId) throws IOException {
         Colaborador colaborador = colaboradorRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Colaborador não encontrado com o ID: " + id));
 
@@ -121,9 +121,13 @@ public class ColaboradorService {
         colaborador.setHorarioEntrada(dto.horarioEntrada());
         colaborador.setHorarioSaida(dto.horarioSaida());
         colaborador.setStatusAtivo(dto.statusAtivo());
-        colaborador.setFoto(dto.foto());
+        colaborador.setFoto("");
 
+        MultipartFile foto = new Base64DecodedMultipartFile(dto.foto(), "foto.jpg", "image/jpeg");
+        String imageUrl = azureBlobService.salvarFoto(foto, containerName);
+    
         ColaboradorDto save = converterParaDto(colaboradorRepository.save(colaborador));
+        this.atualizarFoto(colaborador.getId(), imageUrl); 
 
         List<ColaboradorEmpresa> associacoesAntigas = colabEmpService.buscarAssociacoesPorColaborador(id);
         colabEmpService.excluirAssociacoes(associacoesAntigas);

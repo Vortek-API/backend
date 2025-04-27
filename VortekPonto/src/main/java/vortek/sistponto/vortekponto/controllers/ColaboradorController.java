@@ -79,7 +79,7 @@ public class ColaboradorController {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<?> atualizar(@PathVariable Integer id, @RequestBody ColaboradorRequest colaboradorAtualizado) {
+    public ResponseEntity<?> atualizar(@PathVariable Integer id, @RequestBody ColaboradorRequest colaboradorAtualizado) throws IOException {
         try {
             ColaboradorDto colaborador = colaboradorService.atualizar(id, colaboradorAtualizado.colaborador(), colaboradorAtualizado.empresasId());
             return ResponseEntity.ok(colaborador);

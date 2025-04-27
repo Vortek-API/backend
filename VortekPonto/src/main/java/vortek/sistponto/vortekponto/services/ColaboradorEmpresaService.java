@@ -118,8 +118,11 @@ public class ColaboradorEmpresaService {
     }
 
     public void excluirAssociacoes(List<ColaboradorEmpresa> associacoes) {
-        if (associacoes != null && !associacoes.isEmpty()) {
-            colaboradorEmpresaRepository.deleteAll(associacoes);
+        try {
+            if (associacoes != null && !associacoes.isEmpty()) {
+                colaboradorEmpresaRepository.deleteAll(associacoes);
+            }
+        } catch (Exception e) {
         }
     }
 

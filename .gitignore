@@ -52,7 +52,7 @@ Thumbs.db
 *.out
 
 ### Secrets ###
-application.properties
+/VortekPonto/src/main/resources/application.properties
 application.yml
 application-*.properties
 application-*.yml

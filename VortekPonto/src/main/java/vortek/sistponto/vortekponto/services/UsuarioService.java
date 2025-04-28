@@ -33,6 +33,7 @@ public class UsuarioService {
 
     public String autenticar(String login, String senha) {
         try {
+            initAdmin();
             Usuario usuario = usuarioRepository.findByLogin(login);
             if (usuario == null) {
                 throw new RuntimeException("Usuário não encontrado");

@@ -71,12 +71,12 @@ public class EmpresaController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deletarEmpresa(@PathVariable Integer id) {
+    public ResponseEntity<Boolean> deletarEmpresa(@PathVariable Integer id) {
         try {
-            String resultado = empresaService.deletarEmpresa(id);
-            return ResponseEntity.ok(resultado);
+            boolean deletado = empresaService.deletarEmpresa(id);
+            return ResponseEntity.ok(deletado);
         } catch (Exception e) {
-            return ResponseEntity.status(404).body("Empresa não encontrada!");
+            return ResponseEntity.status(404).body(false);
         }
     }
 

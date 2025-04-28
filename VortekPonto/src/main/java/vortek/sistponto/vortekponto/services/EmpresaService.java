@@ -13,7 +13,6 @@ import vortek.sistponto.vortekponto.models.Empresa;
 import vortek.sistponto.vortekponto.repositories.EmpresaRepository;
 import vortek.sistponto.vortekponto.utils.ValidadorCNPJ;
 
-
 @Service
 public class EmpresaService {
 
@@ -55,7 +54,7 @@ public class EmpresaService {
         return converterParaDto(empresa);
     }
 
-    public String deletarEmpresa(Integer id) {
+    public boolean deletarEmpresa(Integer id) {
         Empresa emp = empresaRepository.findById(id).orElse(null);
 
         if (emp == null) {
@@ -63,7 +62,7 @@ public class EmpresaService {
         }
 
         empresaRepository.delete(emp);
-        return "Empresa deletada com sucesso!";
+        return true;
     }
 
     public EmpresaDto atualizarEmpresa(Integer id, EmpresaDto empresa) {

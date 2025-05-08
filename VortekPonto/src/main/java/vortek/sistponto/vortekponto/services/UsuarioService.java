@@ -57,8 +57,8 @@ public class UsuarioService {
     @PostConstruct // Executa após a inicialização
     public void initAdmin() {
         try {
-            if (usuarioRepository.findByLogin("13364958000103") == null) {
-                criarUsuario("13364958000103", "admin", TipoUsuario.ADMIN);
+            if (usuarioRepository.findByLogin("vortek@altave.com.br") == null) {
+                criarUsuario("vortek@altave.com.br", "admin", TipoUsuario.ADMIN);
             }
         }catch (Exception e) {
             throw new RuntimeException(e.getMessage() +  " " + e);

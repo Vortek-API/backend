@@ -61,6 +61,7 @@ public class EmpresaController {
         }
         return ResponseEntity.ok().body(emp);
     }
+
     @GetMapping("/colabs/{id}")
     public ResponseEntity<List<ColaboradorDto>> buscarColabs(@PathVariable Integer id) {
         List<ColaboradorDto> colabEmp = colabEmpService.buscarColaboradoresPorEmpresaId(id);
@@ -90,4 +91,12 @@ public class EmpresaController {
         }
     }
 
+    @GetMapping("/usuario/{usuarioId}")
+    public ResponseEntity<List<EmpresaDto>> buscarEmpresasPorUsuario(@PathVariable Integer usuarioId) {
+        List<EmpresaDto> empresas = empresaService.buscarEmpresasPorUsuarioId(usuarioId);
+        if (empresas.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(empresas);
+    }
 }

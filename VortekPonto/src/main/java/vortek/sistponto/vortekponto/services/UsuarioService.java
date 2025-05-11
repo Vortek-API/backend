@@ -1,6 +1,7 @@
 package vortek.sistponto.vortekponto.services;
 
 import jakarta.annotation.PostConstruct;
+import vortek.sistponto.vortekponto.dto.LoginResponse;
 import vortek.sistponto.vortekponto.models.TipoUsuario;
 import vortek.sistponto.vortekponto.models.Usuario;
 import vortek.sistponto.vortekponto.repositories.UsuarioRepository;
@@ -31,9 +32,10 @@ public class UsuarioService {
         }
     }
 
-    public String autenticar(String login, String senha) {
+    public LoginResponse autenticar(String login, String senha) {
         try {
             initAdmin();
+            initEmpresa();
             Usuario usuario = usuarioRepository.findByLogin(login);
             if (usuario == null) {
                 throw new RuntimeException("Usuário não encontrado");
@@ -48,7 +50,7 @@ public class UsuarioService {
                 throw new RuntimeException("Grupo inválido para o usuário");
             }
 
-            return grupo.name();
+            return new LoginResponse(usuario.getId(), usuario.getLogin(), grupo.name());
         } catch (Exception e) {
             throw new RuntimeException("Erro ao autenticar: " + e.getMessage(), e);
         }
@@ -59,6 +61,16 @@ public class UsuarioService {
         try {
             if (usuarioRepository.findByLogin("vortek@altave.com.br") == null) {
                 criarUsuario("vortek@altave.com.br", "admin", TipoUsuario.ADMIN);
+            }
+        }catch (Exception e) {
+            throw new RuntimeException(e.getMessage() +  " " + e);
+        }
+    }
+    @PostConstruct // Executa após a inicialização
+    public void initEmpresa() {
+        try {
+            if (usuarioRepository.findByLogin("vortekEmp@altave.com.br") == null) {
+                criarUsuario("vortekEmp@altave.com.br", "emp", TipoUsuario.EMPRESA);
             }
         }catch (Exception e) {
             throw new RuntimeException(e.getMessage() +  " " + e);

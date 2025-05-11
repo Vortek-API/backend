@@ -90,4 +90,9 @@ public class RegistroPontoController {
         List<Map<String, Object>> horasPorEmpresa = service.calcularHorasPorEmpresa(dataInicio, dataFim);
         return ResponseEntity.ok(horasPorEmpresa);
     }
+
+    @PatchMapping("/{id}/editar")
+    public ResponseEntity<RegistroPontoDto> editar(@PathVariable Integer id, @RequestBody RegistroPontoDto dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.editar(id,dto));
+    }
 }

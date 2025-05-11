@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import vortek.sistponto.vortekponto.dto.LoginResponse;
 import vortek.sistponto.vortekponto.services.UsuarioService;
 
 
@@ -24,8 +25,8 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest login) {
         try {
-            String tipo = usuarioService.autenticar(login.getLogin(), login.getSenha());
-            return ResponseEntity.ok(new LoginResponse(tipo));
+            LoginResponse usuario = usuarioService.autenticar(login.getLogin(), login.getSenha());
+            return ResponseEntity.ok(usuario);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {
@@ -40,12 +41,4 @@ public class AuthController {
         private String login;
         private String senha;
     }
-
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    public static class LoginResponse {
-        private String grupo;
-    }
-
 }

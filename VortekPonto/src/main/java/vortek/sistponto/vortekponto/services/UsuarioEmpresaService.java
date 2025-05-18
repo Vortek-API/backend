@@ -2,6 +2,7 @@ package vortek.sistponto.vortekponto.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import vortek.sistponto.vortekponto.dto.UsuarioEmpresaDto;
 import vortek.sistponto.vortekponto.models.Empresa;
 import vortek.sistponto.vortekponto.models.Usuario;
@@ -26,42 +27,74 @@ public class UsuarioEmpresaService {
     @Autowired
     private EmpresaRepository empresaRepository;
 
-    public UsuarioEmpresaDto salvar(UsuarioEmpresaDto dto) {
-        Usuario usuario = usuarioRepository.findById(dto.usuarioId())
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-        Empresa empresa = empresaRepository.findById(dto.empresaId())
-                .orElseThrow(() -> new RuntimeException("Empresa não encontrada"));
+    public void vincularUsuarioEmpresas(Integer usuarioId, List<Integer> empresasIds) {
+        if (usuarioId == null) {
+            throw new IllegalArgumentException("ID do usuário não pode ser nulo");
+        }
+        if (empresasIds == null || empresasIds.isEmpty()) {
+            throw new IllegalArgumentException("A lista de empresas não pode ser nula ou vazia.");
+        }
 
-        UsuarioEmpresa usuarioEmpresa = new UsuarioEmpresa();
-        usuarioEmpresa.setUsuario(usuario);
-        usuarioEmpresa.setEmpresa(empresa);
+        Optional<Usuario> usuarioOptional = usuarioRepository.findById(usuarioId);
+        if (usuarioOptional.isEmpty()) {
+            throw new IllegalArgumentException("Usuario com ID " + usuarioId + "não encontrado.");
+        }
 
-        usuarioEmpresa = usuarioEmpresaRepository.save(usuarioEmpresa);
-        return new UsuarioEmpresaDto(usuarioEmpresa.getId(), usuario.getId(), empresa.getId());
+        Usuario usuario = usuarioOptional.get();
+        List<Empresa> empresas = empresaRepository.findAllById(empresasIds);
+        if (empresas.size() != empresasIds.size()) {
+            throw new IllegalArgumentException("Uma ou mais empresa não foram encontradas");
+        }
+
+        for (Empresa empresa : empresas) {
+            UsuarioEmpresa usuarioEmpresa = new UsuarioEmpresa();
+            usuarioEmpresa.setUsuario(usuario);
+            usuarioEmpresa.setEmpresa(empresa);
+            usuarioEmpresaRepository.save(usuarioEmpresa);
+        }
     }
 
     public List<UsuarioEmpresaDto> listarTodos() {
         return usuarioEmpresaRepository.findAll()
                 .stream()
-                .map(ue -> new UsuarioEmpresaDto(ue.getId(), ue.getUsuario().getId(), ue.getEmpresa().getId()))
+                .map(ue -> new UsuarioEmpresaDto(
+                        ue.getId(),
+                        ue.getUsuario().getId(),
+                        ue.getUsuario().getLogin(),
+                        ue.getUsuario().getGrupo().name(),
+                        ue.getEmpresa().getId(),
+                        ue.getEmpresa().getNome()
+                ))
                 .collect(Collectors.toList());
     }
 
-    public UsuarioEmpresaDto buscarPorId(Integer id) {
+    /*public UsuarioEmpresaDto buscarPorId(Integer id) {
         Optional<UsuarioEmpresa> optional = usuarioEmpresaRepository.findById(id);
         if (optional.isEmpty()) {
             throw new RuntimeException("Relação não encontrada");
         }
         UsuarioEmpresa ue = optional.get();
         return new UsuarioEmpresaDto(ue.getId(), ue.getUsuario().getId(), ue.getEmpresa().getId());
-    }
+    }*/
 
-    public boolean deletar(Integer id) {
+    public void deletar(Integer id) {
         Optional<UsuarioEmpresa> optional = usuarioEmpresaRepository.findById(id);
         if (optional.isEmpty()) {
-            return false;
+            return;
         }
         usuarioEmpresaRepository.delete(optional.get());
-        return true;
+    }
+
+    @Transactional
+    public void atualizarEmpresas(Integer id, List<Integer> empresasIds) {
+        usuarioEmpresaRepository.deleteByUsuarioId(id);
+        if (empresasIds != null) {
+            for (Integer empresaId : empresasIds) {
+                UsuarioEmpresa usuarioEmpresa = new UsuarioEmpresa();
+                usuarioEmpresa.setUsuario(usuarioRepository.getReferenceById(id));
+                usuarioEmpresa.setEmpresa(empresaRepository.getReferenceById(empresaId));
+                usuarioEmpresaRepository.save(usuarioEmpresa);
+            }
+        }
     }
 }

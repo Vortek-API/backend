@@ -11,10 +11,7 @@ import vortek.sistponto.vortekponto.repositories.ColaboradorEmpresaRepository;
 import vortek.sistponto.vortekponto.repositories.RegistroPontoRepository;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -186,6 +183,7 @@ public class RegistroPontoService {
     }
 
     public List<RegistroPontoResponseDto> toDtoDetalhado(List<RegistroPontoDto> list) {
+
         List<Integer> colaboradorEmpresaIds = list.stream()
                 .map(RegistroPontoDto::colaboradorEmpresaId)
                 .distinct()
@@ -196,19 +194,44 @@ public class RegistroPontoService {
                 .stream()
                 .collect(Collectors.toMap(ColaboradorEmpresa::getId, ce -> ce));
 
-        return list.stream().map(dto -> {
-            ColaboradorEmpresa ce = colaboradorEmpresaMap.get(dto.colaboradorEmpresaId());
-            return new RegistroPontoResponseDto(
-                    dto.id(),
-                    ce.getColaborador().getId(),
-                    ce.getEmpresa().getId(),
-                    dto.data(),
-                    dto.horaEntrada(),
-                    dto.horaSaida(),
-                    dto.tempoTotal(),
-                    dto.justificativa()
-            );
-        }).toList();
-    }
+        Map<RegistroPontoDto, String> dtoColaboradorEmpresaMap = list.stream()
+                .collect(Collectors.toMap(
+                        dto -> dto,
+                        dto -> {
+                            ColaboradorEmpresa ce = colaboradorEmpresaMap.get(dto.colaboradorEmpresaId());
+                            return  ce != null ? ce.getColaborador().getNome() : null;
+                        }
+                ));
 
+        Map<RegistroPontoDto, String> dtoEmpresaNomeMap = list.stream()
+                .collect(Collectors.toMap(
+                        dto -> dto,
+                        dto -> {
+                            ColaboradorEmpresa ce = colaboradorEmpresaMap.get(dto.colaboradorEmpresaId());
+                            return ce != null ? ce.getEmpresa().getNome() : null;
+                        }
+                ));
+
+        return list.stream()
+                .sorted(Comparator.comparing(
+                        RegistroPontoDto::data, Comparator.reverseOrder()).
+                        thenComparing(dto -> dtoEmpresaNomeMap.get(dto),
+                                Comparator.naturalOrder())
+                        .thenComparing(dto -> dtoColaboradorEmpresaMap.get(dto),
+                                Comparator.naturalOrder())
+                ).map(dto -> {
+                ColaboradorEmpresa ce = colaboradorEmpresaMap.get(dto.colaboradorEmpresaId());
+                return new RegistroPontoResponseDto(
+                        dto.id(),
+                        ce.getColaborador().getId(),
+                        ce.getEmpresa().getId(),
+                        dto.data(),
+                        dto.horaEntrada(),
+                        dto.horaSaida(),
+                        dto.tempoTotal(),
+                        dto.justificativa()
+                );
+                })
+                .toList();
+    }
 }

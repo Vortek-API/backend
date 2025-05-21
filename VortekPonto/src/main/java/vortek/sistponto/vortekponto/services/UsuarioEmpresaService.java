@@ -63,19 +63,9 @@ public class UsuarioEmpresaService {
                         ue.getUsuario().getLogin(),
                         ue.getUsuario().getGrupo().name(),
                         ue.getEmpresa().getId(),
-                        ue.getEmpresa().getNome()
-                ))
+                        ue.getEmpresa().getNome()))
                 .collect(Collectors.toList());
     }
-
-    /*public UsuarioEmpresaDto buscarPorId(Integer id) {
-        Optional<UsuarioEmpresa> optional = usuarioEmpresaRepository.findById(id);
-        if (optional.isEmpty()) {
-            throw new RuntimeException("Relação não encontrada");
-        }
-        UsuarioEmpresa ue = optional.get();
-        return new UsuarioEmpresaDto(ue.getId(), ue.getUsuario().getId(), ue.getEmpresa().getId());
-    }*/
 
     public void deletar(Integer id) {
         Optional<UsuarioEmpresa> optional = usuarioEmpresaRepository.findById(id);
@@ -96,5 +86,20 @@ public class UsuarioEmpresaService {
                 usuarioEmpresaRepository.save(usuarioEmpresa);
             }
         }
+    }
+
+    public List<Empresa> listarEmpresasPorUsuario(Integer usuarioId) {
+        if (usuarioId == null) {
+            throw new IllegalArgumentException("O ID do usuário não pode ser nulo.");
+        }
+
+        if (!usuarioRepository.existsById(usuarioId)) {
+            throw new IllegalArgumentException("Usuário com ID " + usuarioId + " não encontrado.");
+        }
+
+        List<UsuarioEmpresa> vinculos = usuarioEmpresaRepository.findByUsuarioId(usuarioId);
+        return vinculos.stream()
+                .map(UsuarioEmpresa::getEmpresa) // Extrai o objeto Empresa de cada vínculo
+                .collect(Collectors.toList());
     }
 }

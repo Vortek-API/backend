@@ -3,6 +3,7 @@ package vortek.sistponto.vortekponto.services;
 import jakarta.annotation.PostConstruct;
 import org.springframework.transaction.annotation.Transactional;
 import vortek.sistponto.vortekponto.dto.LoginResponse;
+import vortek.sistponto.vortekponto.models.Empresa;
 import vortek.sistponto.vortekponto.models.TipoUsuario;
 import vortek.sistponto.vortekponto.models.Usuario;
 import vortek.sistponto.vortekponto.repositories.UsuarioEmpresaRepository;
@@ -31,7 +32,7 @@ public class UsuarioService {
     public void criarUsuario(String login, String senha, TipoUsuario grupo) {
         try {
 
-            if (usuarioRepository.findByLogin(login) != null){
+            if (usuarioRepository.findByLogin(login) != null) {
                 throw new IllegalArgumentException("E-mail já registrado " + login);
             }
 
@@ -66,39 +67,47 @@ public class UsuarioService {
             if (grupo == null) {
                 throw new RuntimeException("Grupo inválido para o usuário");
             }
-
-            return new LoginResponse(usuario.getId(), usuario.getLogin(), grupo.name());
-        } catch (Exception e) {
-            throw new RuntimeException("Erro ao autenticar: " + e.getMessage(), e);
-        }
-    }
-
-    @PostConstruct // Executa após a inicialização
-    public void initAdmin() {
-        try {
-            if (usuarioRepository.findByLogin("vortek@altave.com.br") == null) {
-                criarUsuario("vortek@altave.com.br", "admin", TipoUsuario.ADMIN);
+            Empresa[] empresas = new Empresa[0];
+            if (grupo == TipoUsuario.EMPRESA) {
+                empresas = usuarioEmpresaService.listarEmpresasPorUsuario(usuario.getId()).toArray(new Empresa[0]);
             }
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage() + " " + e);
+            if (grupo == TipoUsuario.ADMIN) empresas = new Empresa[0];
+
+        return new LoginResponse(usuario.getId(), usuario.getLogin(), grupo.name(), empresas);
+    } catch(
+    Exception e)
+
+    {
+        throw new RuntimeException("Erro ao autenticar: " + e.getMessage(), e);
+    }
+}
+
+@PostConstruct // Executa após a inicialização
+public void initAdmin() {
+    try {
+        if (usuarioRepository.findByLogin("vortek@altave.com.br") == null) {
+            criarUsuario("vortek@altave.com.br", "admin", TipoUsuario.ADMIN);
         }
+    } catch (Exception e) {
+        throw new RuntimeException(e.getMessage() + " " + e);
     }
+}
 
-    @PostConstruct // Executa após a inicialização
-    public void initEmpresa() {
-        try {
-            if (usuarioRepository.findByLogin("vortekEmp@altave.com.br") == null) {
-                criarUsuario("vortekEmp@altave.com.br", "emp", TipoUsuario.EMPRESA);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage() + " " + e);
+@PostConstruct // Executa após a inicialização
+public void initEmpresa() {
+    try {
+        if (usuarioRepository.findByLogin("vortekEmp@altave.com.br") == null) {
+            criarUsuario("vortekEmp@altave.com.br", "emp", TipoUsuario.EMPRESA);
         }
+    } catch (Exception e) {
+        throw new RuntimeException(e.getMessage() + " " + e);
     }
+}
 
 
-    @Transactional
-    public void excluirUsuarioCompleto(Integer usuarioId) {
-       usuarioEmpresaService.atualizarEmpresas(usuarioId, List.of());
-        usuarioRepository.deleteById(usuarioId);
-    }
+@Transactional
+public void excluirUsuarioCompleto(Integer usuarioId) {
+    usuarioEmpresaService.atualizarEmpresas(usuarioId, List.of());
+    usuarioRepository.deleteById(usuarioId);
+}
 }

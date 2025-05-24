@@ -5,6 +5,7 @@ import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import vortek.sistponto.vortekponto.dto.LoginResponse;
 import vortek.sistponto.vortekponto.dto.NovoUsuarioDto;
 import vortek.sistponto.vortekponto.dto.UsuarioEmpresaDto;
 import vortek.sistponto.vortekponto.models.Usuario;
@@ -39,6 +40,11 @@ public class UsuariosController {
     @GetMapping("/lista")
     public List<UsuarioEmpresaDto> lista() {
         return usuarioEmpresaService.listarTodos();
+    }
+
+    @GetMapping("/{id}")
+    public LoginResponse buscarPorId(@PathVariable Integer id) {
+        return usuarioService.buscarPorId(id);
     }
 
     @PostMapping("/novo-usuario")

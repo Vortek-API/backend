@@ -25,6 +25,7 @@ public class RegistroPonto {
     private LocalTime horaEntrada;
     private LocalTime horaSaida;
     private LocalTime tempoTotal;
+    private String justificativa;
 
     // Getters e Setters
 }

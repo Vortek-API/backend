@@ -9,5 +9,6 @@ public record RegistroPontoDto(
         LocalDate data,
         LocalTime horaEntrada,
         LocalTime horaSaida,
-        LocalTime tempoTotal
+        LocalTime tempoTotal,
+        String justificativa
 ) {}

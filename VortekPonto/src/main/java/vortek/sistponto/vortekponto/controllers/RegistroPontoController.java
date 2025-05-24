@@ -10,6 +10,7 @@ import vortek.sistponto.vortekponto.dto.RegistroPontoResponseDto;
 import vortek.sistponto.vortekponto.services.RegistroPontoService;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,12 @@ public class RegistroPontoController {
     public ResponseEntity<RegistroPontoDto> criar(@RequestBody RegistroPontoDto dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.salvar(dto));
     }
+
+    @PostMapping("/{colaboradorId}/{empresaId}")
+    public ResponseEntity<RegistroPontoDto> criarColabEmp(@RequestBody RegistroPontoResponseDto dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.salvar(dto));
+    }
+
 
     @GetMapping
     public ResponseEntity<List<RegistroPontoDto>> buscarRegistros(
@@ -89,5 +96,18 @@ public class RegistroPontoController {
 
         List<Map<String, Object>> horasPorEmpresa = service.calcularHorasPorEmpresa(dataInicio, dataFim);
         return ResponseEntity.ok(horasPorEmpresa);
+    }
+
+    @PatchMapping("/{id}/editar")
+    public ResponseEntity<RegistroPontoDto> editar(@PathVariable Integer id, @RequestBody RegistroPontoDto dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.editar(id,dto));
+    }
+
+   @GetMapping("/contar-colaboradores")
+    public List<Map<String, Object>> contarColaboradoresPorPeriodo(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime horaInicio,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime horaFim) {
+        return service.contarColaboradoresPorEmpresaNoPeriodo(data, horaInicio, horaFim);
     }
 }

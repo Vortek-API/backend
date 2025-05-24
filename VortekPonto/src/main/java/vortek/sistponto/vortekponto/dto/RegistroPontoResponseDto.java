@@ -10,5 +10,6 @@ public record RegistroPontoResponseDto(
         LocalDate data,
         LocalTime horaEntrada,
         LocalTime horaSaida,
-        LocalTime tempoTotal
+        LocalTime tempoTotal,
+        String justificativa
 ) {}

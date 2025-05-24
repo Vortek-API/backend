@@ -27,6 +27,12 @@ public class RegistroPontoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.salvar(dto));
     }
 
+    @PostMapping("/{colaboradorId}/{empresaId}")
+    public ResponseEntity<RegistroPontoDto> criarColabEmp(@RequestBody RegistroPontoResponseDto dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.salvar(dto));
+    }
+
+
     @GetMapping
     public ResponseEntity<List<RegistroPontoDto>> buscarRegistros(
             @RequestParam(required = false) Integer colaboradorId,

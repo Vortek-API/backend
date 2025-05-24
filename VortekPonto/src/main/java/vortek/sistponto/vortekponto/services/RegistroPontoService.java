@@ -36,6 +36,21 @@ public class RegistroPontoService {
 
         return toDto(repository.save(rp));
     }
+    public RegistroPontoDto salvar(RegistroPontoResponseDto dto) {
+        ColaboradorEmpresa ce = colaboradorEmpresaRepository.findByColaboradorIdAndEmpresaId(dto.colaboradorId(), dto.empresaId())
+                .orElseThrow(() -> new ObjectNotFoundException("Associação não encontrada"));
+
+        RegistroPonto rp = new RegistroPonto();
+        rp.setColaboradorEmpresa(ce);
+        rp.setData(dto.data());
+        rp.setHoraEntrada(dto.horaEntrada());
+        rp.setHoraSaida(dto.horaSaida());
+        rp.setTempoTotal(dto.tempoTotal());
+        rp.setJustificativa(dto.justificativa());
+
+        return toDto(repository.save(rp));
+    }
+
 
     public RegistroPontoDto editar(Integer id, RegistroPontoDto dto) {
 

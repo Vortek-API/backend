@@ -1,6 +1,7 @@
 package vortek.sistponto.vortekponto.controllers;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -50,6 +51,7 @@ public class ColaboradorController {
     @PostMapping
     public ResponseEntity<?> criar(@RequestBody ColaboradorRequest request) {
         try {
+            System.out.println(request);
             ColaboradorDto colaborador = colaboradorService.salvar(request.colaborador(), request.empresasId());
             return ResponseEntity.status(HttpStatus.CREATED).body(colaborador);
         } catch (Exception e) {

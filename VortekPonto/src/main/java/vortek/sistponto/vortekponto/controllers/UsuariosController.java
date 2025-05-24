@@ -56,6 +56,8 @@ public class UsuariosController {
                 throw new IllegalStateException("Usuário não encontrado após criação");
             }
             System.out.println("Empresas IDs recebidas: " + dto.empresasIds());
+            System.out.println("Empresas IDs recebidas: " + dto.grupo());
+            System.out.println("Empresas IDs recebidas: " + dto.email());
             usuarioEmpresaService.vincularUsuarioEmpresas(usuario.getId(), dto.empresasIds());
             emailService.enviarEmailBemVindo(dto.email(), "Senha@123");
 

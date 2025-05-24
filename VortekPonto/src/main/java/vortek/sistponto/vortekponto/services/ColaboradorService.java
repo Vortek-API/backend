@@ -69,14 +69,24 @@ public class ColaboradorService {
         }
 
         Colaborador novo = criaColaborador(dto);
+        String imageUrl = null;
 
-        MultipartFile foto = new Base64DecodedMultipartFile(dto.foto(), "foto.jpg", "image/jpeg");
-        novo.setFoto("");
+        if (dto.foto() != null && !dto.foto().trim().isEmpty()) { // Use .trim() para checar se não é apenas espaços em branco
+            try {
+                // Esta linha só será executada se dto.foto() não for null ou vazio
+                MultipartFile foto = new Base64DecodedMultipartFile(dto.foto(), "foto.jpg", "image/jpeg");
+                imageUrl = azureBlobService.salvarFoto(foto, containerName);
+            } catch (IOException e) {
+                System.err.println("Erro ao processar e salvar a foto: " + e.getMessage());
+                // Opcional: Lançar uma exceção específica ou apenas logar
+            }
+        }
+        novo.setFoto(imageUrl);
         ColaboradorDto save = converterParaDto(colaboradorRepository.save(novo));
 
-        String imageUrl = azureBlobService.salvarFoto(foto, containerName);
-        this.atualizarFoto(save.id(), imageUrl); 
-
+        if (imageUrl != null) {
+            this.atualizarFoto(save.id(), imageUrl); // Esta função deve atualizar a URL da foto no DB
+        }
         colabEmpService.associarColaboradorAEmpresas(save, empresasId);
 
         return save;

@@ -32,10 +32,10 @@ public class UsuarioService {
     }
 
     public void criarUsuario(String login, String senha, TipoUsuario grupo) {
-        try {
 
+        try {
             if (usuarioRepository.findByLogin(login) != null) {
-                throw new IllegalArgumentException("E-mail já registrado " + login);
+                throw new IllegalArgumentException();
             }
 
             String salt = SenhaHashing.gerarSalt();
@@ -47,7 +47,10 @@ public class UsuarioService {
             usuario.setSenha(hashSenha);
             usuario.setGrupo(grupo);
             usuarioRepository.save(usuario);
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("E-mail já registrado " + login);
+        }
+        catch (Exception e) {
             throw new RuntimeException(e.getMessage() + " " + e);
         }
     }

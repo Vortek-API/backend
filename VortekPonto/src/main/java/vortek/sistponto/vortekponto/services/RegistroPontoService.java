@@ -11,6 +11,7 @@ import vortek.sistponto.vortekponto.repositories.ColaboradorEmpresaRepository;
 import vortek.sistponto.vortekponto.repositories.RegistroPontoRepository;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -249,4 +250,10 @@ public class RegistroPontoService {
                 })
                 .toList();
     }
+
+    // metodo p contar colabs por horario
+    public List<Map<String, Object>> contarColaboradoresPorEmpresaNoPeriodo(LocalDate data, LocalTime horaInicio, LocalTime horaFim) {
+        return repository.contarColaboradoresPorEmpresaEHorario(data, horaInicio, horaFim);
+    }
+
 }

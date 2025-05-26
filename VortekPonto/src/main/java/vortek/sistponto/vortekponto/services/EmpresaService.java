@@ -10,7 +10,10 @@ import vortek.sistponto.vortekponto.dto.EmpresaDto;
 import vortek.sistponto.vortekponto.exceptions.CNPJInvalidoException;
 import vortek.sistponto.vortekponto.exceptions.ObjectNotFoundException;
 import vortek.sistponto.vortekponto.models.Empresa;
+import vortek.sistponto.vortekponto.models.UsuarioEmpresa;
 import vortek.sistponto.vortekponto.repositories.EmpresaRepository;
+import vortek.sistponto.vortekponto.repositories.UsuarioEmpresaRepository;
+import vortek.sistponto.vortekponto.repositories.UsuarioRepository;
 import vortek.sistponto.vortekponto.utils.ValidadorCNPJ;
 
 @Service
@@ -18,6 +21,12 @@ public class EmpresaService {
 
     @Autowired
     private EmpresaRepository empresaRepository;
+
+    @Autowired
+    private UsuarioEmpresaRepository usuarioEmpresaRepository;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     @Autowired
     private ValidadorCNPJ validadorCNPJ;
@@ -29,7 +38,7 @@ public class EmpresaService {
             throw new CNPJInvalidoException("CNPJ já cadastrado!");
         }
 
-        if(!validadorCNPJ.isValidCNPJ(empresa.cnpj())) {
+        if (!validadorCNPJ.isValidCNPJ(empresa.cnpj())) {
             throw new CNPJInvalidoException("CNPJ inválido: " + empresa.cnpj());
         }
 
@@ -84,7 +93,19 @@ public class EmpresaService {
                 empresa.getId(),
                 empresa.getNome(),
                 empresa.getCnpj(),
-                empresa.getDataCadastro()
-        );
+                empresa.getDataCadastro());
+    }
+
+    public List<EmpresaDto> buscarEmpresasPorUsuarioId(Integer usuarioId) {
+        if (!usuarioRepository.existsById(usuarioId)) {
+            throw new ObjectNotFoundException("Usuário com ID " + usuarioId + " não encontrado");
+        }
+
+        List<UsuarioEmpresa> relacoes = usuarioEmpresaRepository.findByUsuarioId(usuarioId);
+
+        return relacoes.stream()
+                .map(UsuarioEmpresa::getEmpresa)
+                .map(this::converterParaDto)
+                .collect(Collectors.toList());
     }
 }

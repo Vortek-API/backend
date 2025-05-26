@@ -1,13 +1,22 @@
 package vortek.sistponto.vortekponto.services;
 
 import jakarta.annotation.PostConstruct;
+import org.springframework.transaction.annotation.Transactional;
+import vortek.sistponto.vortekponto.dto.LoginResponse;
+import vortek.sistponto.vortekponto.dto.UsuarioEmpresaDto;
+import vortek.sistponto.vortekponto.models.Empresa;
 import vortek.sistponto.vortekponto.models.TipoUsuario;
 import vortek.sistponto.vortekponto.models.Usuario;
+import vortek.sistponto.vortekponto.repositories.UsuarioEmpresaRepository;
 import vortek.sistponto.vortekponto.repositories.UsuarioRepository;
 import vortek.sistponto.vortekponto.security.SenhaHashing;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UsuarioService {
@@ -15,8 +24,20 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    @Autowired
+    private UsuarioEmpresaService usuarioEmpresaService;
+
+    public UsuarioService(UsuarioRepository usuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
+    }
+
     public void criarUsuario(String login, String senha, TipoUsuario grupo) {
+
         try {
+            if (usuarioRepository.findByLogin(login) != null) {
+                throw new IllegalArgumentException();
+            }
+
             String salt = SenhaHashing.gerarSalt();
             String hashSenha = SenhaHashing.hashSenha(senha, salt);
 
@@ -26,14 +47,18 @@ public class UsuarioService {
             usuario.setSenha(hashSenha);
             usuario.setGrupo(grupo);
             usuarioRepository.save(usuario);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage() +  " " + e);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("E-mail já registrado " + login);
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e.getMessage() + " " + e);
         }
     }
 
-    public String autenticar(String login, String senha) {
+    public LoginResponse autenticar(String login, String senha) {
         try {
             initAdmin();
+            initEmpresa();
             Usuario usuario = usuarioRepository.findByLogin(login);
             if (usuario == null) {
                 throw new RuntimeException("Usuário não encontrado");
@@ -47,22 +72,60 @@ public class UsuarioService {
             if (grupo == null) {
                 throw new RuntimeException("Grupo inválido para o usuário");
             }
+            Empresa[] empresas = new Empresa[0];
+            if (grupo == TipoUsuario.EMPRESA) {
+                empresas = usuarioEmpresaService.listarEmpresasPorUsuario(usuario.getId()).toArray(new Empresa[0]);
+            }
+            if (grupo == TipoUsuario.ADMIN)
+                empresas = new Empresa[0];
 
-            return grupo.name();
-        } catch (Exception e) {
+            return new LoginResponse(usuario.getId(), usuario.getLogin(), grupo.name(), empresas);
+        } catch (Exception e)
+
+        {
             throw new RuntimeException("Erro ao autenticar: " + e.getMessage(), e);
         }
+    }
+
+    public LoginResponse buscarPorId(Integer id) {
+        Usuario user = usuarioRepository.findById(id).orElse(null);
+
+        TipoUsuario group = user.getGrupo();
+        Empresa[] empresas = new Empresa[0];
+            if (group == TipoUsuario.EMPRESA) {
+                empresas = usuarioEmpresaService.listarEmpresasPorUsuario(user.getId()).toArray(new Empresa[0]);
+            }
+            if (group == TipoUsuario.ADMIN)
+                empresas = new Empresa[0];
+
+        return new LoginResponse(user.getId(), user.getLogin(), user.getGrupo().name(), empresas);
     }
 
     @PostConstruct // Executa após a inicialização
     public void initAdmin() {
         try {
-            if (usuarioRepository.findByLogin("13364958000103") == null) {
-                criarUsuario("13364958000103", "admin", TipoUsuario.ADMIN);
+            if (usuarioRepository.findByLogin("vortek@altave.com.br") == null) {
+                criarUsuario("vortek@altave.com.br", "admin", TipoUsuario.ADMIN);
             }
-        }catch (Exception e) {
-            throw new RuntimeException(e.getMessage() +  " " + e);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage() + " " + e);
         }
     }
 
+    @PostConstruct // Executa após a inicialização
+    public void initEmpresa() {
+        try {
+            if (usuarioRepository.findByLogin("vortekEmp@altave.com.br") == null) {
+                criarUsuario("vortekEmp@altave.com.br", "emp", TipoUsuario.EMPRESA);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage() + " " + e);
+        }
+    }
+
+    @Transactional
+    public void excluirUsuarioCompleto(Integer usuarioId) {
+        usuarioEmpresaService.atualizarEmpresas(usuarioId, List.of());
+        usuarioRepository.deleteById(usuarioId);
+    }
 }

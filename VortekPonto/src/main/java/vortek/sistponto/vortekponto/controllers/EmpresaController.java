@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import vortek.sistponto.vortekponto.dto.ColaboradorDto;
 import vortek.sistponto.vortekponto.dto.EmpresaDto;
 import vortek.sistponto.vortekponto.exceptions.ObjectNotFoundException;
+import vortek.sistponto.vortekponto.models.Empresa;
+import vortek.sistponto.vortekponto.repositories.EmpresaRepository;
 import vortek.sistponto.vortekponto.services.ColaboradorEmpresaService;
 import vortek.sistponto.vortekponto.services.EmpresaService;
 
@@ -32,6 +34,10 @@ public class EmpresaController {
 
     @Autowired
     ColaboradorEmpresaService colabEmpService;
+
+    @Autowired
+    private EmpresaRepository empresaRepository;
+
 
     @PostMapping
     public ResponseEntity<?> cadastrarEmpresa(@RequestBody EmpresaDto empresa) {
@@ -53,6 +59,11 @@ public class EmpresaController {
         return ResponseEntity.ok().body(emp);
     }
 
+    @GetMapping("/lista")
+    public List<Empresa> listarEmpresas() {
+        return empresaRepository.findAll();
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<EmpresaDto> buscarPorId(@PathVariable Integer id) {
         EmpresaDto emp = empresaService.buscarPorId(id);
@@ -61,6 +72,7 @@ public class EmpresaController {
         }
         return ResponseEntity.ok().body(emp);
     }
+
     @GetMapping("/colabs/{id}")
     public ResponseEntity<List<ColaboradorDto>> buscarColabs(@PathVariable Integer id) {
         List<ColaboradorDto> colabEmp = colabEmpService.buscarColaboradoresPorEmpresaId(id);
@@ -90,4 +102,12 @@ public class EmpresaController {
         }
     }
 
+    @GetMapping("/usuario/{usuarioId}")
+    public ResponseEntity<List<EmpresaDto>> buscarEmpresasPorUsuario(@PathVariable Integer usuarioId) {
+        List<EmpresaDto> empresas = empresaService.buscarEmpresasPorUsuarioId(usuarioId);
+        if (empresas.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(empresas);
+    }
 }

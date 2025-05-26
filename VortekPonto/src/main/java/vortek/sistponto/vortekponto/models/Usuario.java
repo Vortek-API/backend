@@ -37,10 +37,6 @@ public class Usuario {
     @Enumerated(EnumType.STRING)  // Utilizando o Enum e armazenando o nome da constante como String
     private TipoUsuario grupo;
 
-    @ManyToOne
-    @JoinColumn(name = "empresa_id", referencedColumnName = "id")
-    private Empresa empresa;
-
     @Size(max = 255)
     @NotNull
     @Column(name = "salt", nullable = false)

@@ -5,9 +5,11 @@ import org.springframework.stereotype.Service;
 import vortek.sistponto.vortekponto.dto.RegistroPontoDto;
 import vortek.sistponto.vortekponto.dto.RegistroPontoResponseDto;
 import vortek.sistponto.vortekponto.exceptions.ObjectNotFoundException;
-import vortek.sistponto.vortekponto.models.ColaboradorEmpresa;
+import vortek.sistponto.vortekponto.models.Colaborador;
+import vortek.sistponto.vortekponto.models.Empresa;
 import vortek.sistponto.vortekponto.models.RegistroPonto;
-import vortek.sistponto.vortekponto.repositories.ColaboradorEmpresaRepository;
+import vortek.sistponto.vortekponto.repositories.ColaboradorRepository;
+import vortek.sistponto.vortekponto.repositories.EmpresaRepository;
 import vortek.sistponto.vortekponto.repositories.RegistroPontoRepository;
 
 import java.time.LocalDate;
@@ -22,27 +24,21 @@ public class RegistroPontoService {
     private RegistroPontoRepository repository;
 
     @Autowired
-    private ColaboradorEmpresaRepository colaboradorEmpresaRepository;
+    private ColaboradorRepository colaboradorRepository;
+
+    @Autowired
+    private EmpresaRepository empresaRepository;
 
     public RegistroPontoDto salvar(RegistroPontoDto dto) {
-        ColaboradorEmpresa ce = colaboradorEmpresaRepository.findById(dto.colaboradorEmpresaId())
-                .orElseThrow(() -> new ObjectNotFoundException("Associação não encontrada"));
+        Colaborador colaborador = colaboradorRepository.findById(dto.colaboradorId())
+                .orElseThrow(() -> new ObjectNotFoundException("Colaborador não encontrado"));
+        
+        Empresa empresa = empresaRepository.findById(dto.empresaId())
+                .orElseThrow(() -> new ObjectNotFoundException("Empresa não encontrada"));
 
         RegistroPonto rp = new RegistroPonto();
-        rp.setColaboradorEmpresa(ce);
-        rp.setData(dto.data());
-        rp.setHoraEntrada(dto.horaEntrada());
-        rp.setHoraSaida(dto.horaSaida());
-        rp.setTempoTotal(dto.tempoTotal());
-
-        return toDto(repository.save(rp));
-    }
-    public RegistroPontoDto salvar(RegistroPontoResponseDto dto) {
-        ColaboradorEmpresa ce = colaboradorEmpresaRepository.findByColaboradorIdAndEmpresaId(dto.colaboradorId(), dto.empresaId())
-                .orElseThrow(() -> new ObjectNotFoundException("Associação não encontrada"));
-
-        RegistroPonto rp = new RegistroPonto();
-        rp.setColaboradorEmpresa(ce);
+        rp.setColaborador(colaborador);
+        rp.setEmpresa(empresa);
         rp.setData(dto.data());
         rp.setHoraEntrada(dto.horaEntrada());
         rp.setHoraSaida(dto.horaSaida());
@@ -52,10 +48,28 @@ public class RegistroPontoService {
         return toDto(repository.save(rp));
     }
 
+    public RegistroPontoDto salvar(RegistroPontoResponseDto dto) {
+        Colaborador colaborador = colaboradorRepository.findById(dto.colaboradorId())
+                .orElseThrow(() -> new ObjectNotFoundException("Colaborador não encontrado"));
+        
+        Empresa empresa = empresaRepository.findById(dto.empresaId())
+                .orElseThrow(() -> new ObjectNotFoundException("Empresa não encontrada"));
+
+        RegistroPonto rp = new RegistroPonto();
+        rp.setColaborador(colaborador);
+        rp.setEmpresa(empresa);
+        rp.setData(dto.data());
+        rp.setHoraEntrada(dto.horaEntrada());
+        rp.setHoraSaida(dto.horaSaida());
+        rp.setTempoTotal(dto.tempoTotal());
+        rp.setJustificativa(dto.justificativa());
+
+        return toDto(repository.save(rp));
+    }
 
     public RegistroPontoDto editar(Integer id, RegistroPontoDto dto) {
-
-        RegistroPonto rp = repository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Registro não encontrado"));
+        RegistroPonto rp = repository.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException("Registro não encontrado"));
 
         if(dto.data() != null) {
             rp.setData(dto.data());
@@ -96,7 +110,8 @@ public class RegistroPontoService {
     private RegistroPontoDto toDto(RegistroPonto rp) {
         return new RegistroPontoDto(
                 rp.getId(),
-                rp.getColaboradorEmpresa().getId(),
+                rp.getColaborador().getId(),
+                rp.getEmpresa().getId(),
                 rp.getData(),
                 rp.getHoraEntrada(),
                 rp.getHoraSaida(),
@@ -105,13 +120,7 @@ public class RegistroPontoService {
     }
 
     public List<RegistroPontoDto> buscarPorColaboradorEEmpresa(Integer colaboradorId, Integer empresaId) {
-        ColaboradorEmpresa colaboradorEmpresa = colaboradorEmpresaRepository
-                .findByColaboradorIdAndEmpresaId(colaboradorId, empresaId)
-                .orElseThrow(() -> new ObjectNotFoundException("Associação não encontrada."));
-
-        List<RegistroPonto> registros = repository
-                .findByColaboradorEmpresaId(colaboradorEmpresa.getId());
-
+        List<RegistroPonto> registros = repository.findByColaboradorIdAndEmpresaId(colaboradorId, empresaId);
         return registros.stream().map(this::toDto).toList();
     }
 
@@ -121,24 +130,8 @@ public class RegistroPontoService {
             LocalDate dataInicio,
             LocalDate dataFim) {
 
-        List<ColaboradorEmpresa> relacoes;
-
-        if (colaboradorId != null && empresasId != null && !empresasId.isEmpty()) {
-            relacoes = colaboradorEmpresaRepository.findByColaboradorIdAndEmpresaIdIn(colaboradorId, empresasId);
-        } else if (colaboradorId != null) {
-            relacoes = colaboradorEmpresaRepository.findByColaboradorId(colaboradorId);
-        } else if (empresasId != null && !empresasId.isEmpty()) {
-            relacoes = colaboradorEmpresaRepository.findByEmpresaIdIn(empresasId);
-        } else {
-            relacoes = colaboradorEmpresaRepository.findAll();
-        }
-
-        List<Integer> colabEmpIds = relacoes.stream()
-                .map(ColaboradorEmpresa::getId)
-                .toList();
-
         List<RegistroPonto> registros = repository.findByColaboradorEmpresasAndData(
-                colabEmpIds, dataInicio, dataFim);
+                colaboradorId, empresasId, dataInicio, dataFim);
 
         return registros.stream().map(this::toDto).toList();
     }
@@ -153,19 +146,16 @@ public class RegistroPontoService {
     }
 
     public List<Map<String, Object>> calcularHorasPorEmpresa(LocalDate dataInicio, LocalDate dataFim) {
-        // Buscar todos os registros de ponto no período
         List<RegistroPonto> registros = repository.findByData(dataInicio, dataFim);
 
-        // Agrupar por empresa e calcular horas totais
         Map<Integer, Long> horasPorEmpresaMap = new HashMap<>();
         Map<Integer, String> empresaNomeMap = new HashMap<>();
 
         for (RegistroPonto registro : registros) {
-            Integer empresaId = registro.getColaboradorEmpresa().getEmpresa().getId();
-            String empresaNome = registro.getColaboradorEmpresa().getEmpresa().getNome();
+            Integer empresaId = registro.getEmpresa().getId();
+            String empresaNome = registro.getEmpresa().getNome();
             empresaNomeMap.put(empresaId, empresaNome);
 
-            // Calcular horas em segundos e adicionar ao total
             if (registro.getTempoTotal() != null) {
                 long segundos = registro.getTempoTotal().toSecondOfDay();
                 horasPorEmpresaMap.put(empresaId,
@@ -173,13 +163,11 @@ public class RegistroPontoService {
             }
         }
 
-        // Converter para lista de mapas para resposta
         List<Map<String, Object>> resultado = new ArrayList<>();
         for (Map.Entry<Integer, Long> entry : horasPorEmpresaMap.entrySet()) {
             Integer empresaId = entry.getKey();
             Long segundosTotais = entry.getValue();
 
-            // Converter segundos para horas:minutos:segundos
             long horas = segundosTotais / 3600;
             long minutos = (segundosTotais % 3600) / 60;
             long segundos = segundosTotais % 60;
@@ -199,61 +187,24 @@ public class RegistroPontoService {
     }
 
     public List<RegistroPontoResponseDto> toDtoDetalhado(List<RegistroPontoDto> list) {
-
-        List<Integer> colaboradorEmpresaIds = list.stream()
-                .map(RegistroPontoDto::colaboradorEmpresaId)
-                .distinct()
-                .toList();
-
-        Map<Integer, ColaboradorEmpresa> colaboradorEmpresaMap = colaboradorEmpresaRepository
-                .findAllById(colaboradorEmpresaIds)
-                .stream()
-                .collect(Collectors.toMap(ColaboradorEmpresa::getId, ce -> ce));
-
-        Map<RegistroPontoDto, String> dtoColaboradorEmpresaMap = list.stream()
-                .collect(Collectors.toMap(
-                        dto -> dto,
-                        dto -> {
-                            ColaboradorEmpresa ce = colaboradorEmpresaMap.get(dto.colaboradorEmpresaId());
-                            return  ce != null ? ce.getColaborador().getNome() : null;
-                        }
-                ));
-
-        Map<RegistroPontoDto, String> dtoEmpresaNomeMap = list.stream()
-                .collect(Collectors.toMap(
-                        dto -> dto,
-                        dto -> {
-                            ColaboradorEmpresa ce = colaboradorEmpresaMap.get(dto.colaboradorEmpresaId());
-                            return ce != null ? ce.getEmpresa().getNome() : null;
-                        }
-                ));
-
         return list.stream()
                 .sorted(Comparator.comparing(
-                        RegistroPontoDto::data, Comparator.reverseOrder()).
-                        thenComparing(dto -> dtoEmpresaNomeMap.get(dto),
-                                Comparator.naturalOrder())
-                        .thenComparing(dto -> dtoColaboradorEmpresaMap.get(dto),
-                                Comparator.naturalOrder())
-                ).map(dto -> {
-                ColaboradorEmpresa ce = colaboradorEmpresaMap.get(dto.colaboradorEmpresaId());
-                return new RegistroPontoResponseDto(
+                        RegistroPontoDto::data, Comparator.reverseOrder())
+                        .thenComparing(RegistroPontoDto::empresaId)
+                        .thenComparing(RegistroPontoDto::colaboradorId))
+                .map(dto -> new RegistroPontoResponseDto(
                         dto.id(),
-                        ce.getColaborador().getId(),
-                        ce.getEmpresa().getId(),
+                        dto.colaboradorId(),
+                        dto.empresaId(),
                         dto.data(),
                         dto.horaEntrada(),
                         dto.horaSaida(),
                         dto.tempoTotal(),
-                        dto.justificativa()
-                );
-                })
+                        dto.justificativa()))
                 .toList();
     }
 
-    // metodo p contar colabs por horario
     public List<Map<String, Object>> contarColaboradoresPorEmpresaNoPeriodo(LocalDate data, LocalTime horaInicio, LocalTime horaFim) {
         return repository.contarColaboradoresPorEmpresaEHorario(data, horaInicio, horaFim);
     }
-
 }

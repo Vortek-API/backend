@@ -1,7 +1,9 @@
 package vortek.sistponto.vortekponto.models;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
@@ -11,6 +13,8 @@ import java.time.LocalTime;
 @Table(name = "registro_ponto")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class RegistroPonto {
 
     @Id
@@ -18,8 +22,12 @@ public class RegistroPonto {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "colaborador_empresa_id", nullable = false)
-    private ColaboradorEmpresa colaboradorEmpresa;
+    @JoinColumn(name = "colaborador_id", nullable = false)
+    private Colaborador colaborador;
+
+    @ManyToOne
+    @JoinColumn(name = "empresa_id", nullable = false)
+    private Empresa empresa;
 
     private LocalDate data;
     private LocalTime horaEntrada;

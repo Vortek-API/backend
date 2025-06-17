@@ -5,7 +5,8 @@ import java.time.LocalTime;
 
 public record RegistroPontoDto(
         Integer id,
-        Integer colaboradorEmpresaId,
+        Integer colaboradorId,
+        Integer empresaId,
         LocalDate data,
         LocalTime horaEntrada,
         LocalTime horaSaida,

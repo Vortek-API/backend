@@ -17,8 +17,8 @@ import lombok.Setter;
 @Table(name = "empresa")
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class Empresa {
 
     @Id
@@ -33,6 +33,9 @@ public class Empresa {
 
     @Column(name = "data_cadastro", updatable = false, insertable = false)
     private LocalDateTime dataCadastro;
+
+    @Column(name = "status_ativo", nullable = false)
+    private boolean statusAtivo = true;
 
     // private List<ColaboradorEmpresa> colaboradorEmpresas;
     // private List<UsuarioEmpresa> usuarioEmpresas;

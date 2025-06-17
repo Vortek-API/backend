@@ -44,6 +44,7 @@ public class EmpresaService {
 
         emp.setNome(empresa.nome());
         emp.setCnpj(empresa.cnpj());
+        emp.setStatusAtivo(empresa.statusAtivo());
         emp = empresaRepository.save(emp);
 
         return converterParaDto(emp);
@@ -52,7 +53,6 @@ public class EmpresaService {
     public List<EmpresaDto> listarEmpresas() {
         List<Empresa> empresas = empresaRepository.findAll();
         return empresas.stream().map(this::converterParaDto).collect(Collectors.toList());
-
     }
 
     public EmpresaDto buscarPorId(Integer id) {
@@ -83,6 +83,7 @@ public class EmpresaService {
 
         emp.setNome(empresa.nome());
         emp.setCnpj(empresa.cnpj());
+        emp.setStatusAtivo(empresa.statusAtivo());
         emp = empresaRepository.save(emp);
 
         return converterParaDto(emp);
@@ -93,7 +94,8 @@ public class EmpresaService {
                 empresa.getId(),
                 empresa.getNome(),
                 empresa.getCnpj(),
-                empresa.getDataCadastro());
+                empresa.getDataCadastro(),
+                empresa.isStatusAtivo());
     }
 
     public List<EmpresaDto> buscarEmpresasPorUsuarioId(Integer usuarioId) {

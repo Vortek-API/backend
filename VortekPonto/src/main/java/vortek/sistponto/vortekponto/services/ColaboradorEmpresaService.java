@@ -87,7 +87,12 @@ public class ColaboradorEmpresaService {
     public List<EmpresaDto> buscarEmpresasDoColaborador(Integer colaboradorId) {
         return repository.findEmpresasByColaboradorId(colaboradorId)
                 .stream()
-                .map(emp -> new EmpresaDto(emp.getId(), emp.getNome(), emp.getCnpj(), emp.getDataCadastro()))
+                .map(emp -> new EmpresaDto(
+                    emp.getId(), 
+                    emp.getNome(), 
+                    emp.getCnpj(), 
+                    emp.getDataCadastro(),
+                    emp.isStatusAtivo()))
                 .collect(Collectors.toList());
     }
 
